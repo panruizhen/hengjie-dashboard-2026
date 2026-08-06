@@ -1027,8 +1027,8 @@ function renderAll(){
   setProgress(100,'加载完成');
   var ov=document.getElementById('loadingOverlay');
   if(ov) ov.style.display='none';
-  // header info
-  var sub = '总工单: '+agg.globalC.total+' | 月份: '+MONTHS[FILTERS.monthStart]+' ~ '+MONTHS[FILTERS.monthEnd]+' | 当前月: '+D.meta.current_month;
+  // header info（只显示数据来源说明）
+  var sub = '数据来源：明细取值业务提供的《净按约且一次就好明细表》，全部月取当前最新区域经理';
   document.getElementById('headerInfo').textContent=sub;
   // 月环比总结（5行，与筛选器同步）
   var c6 = agg.byMonth[FILTERS.monthEnd];
@@ -1640,10 +1640,10 @@ function renderPartsChart(agg){
   });
   var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%'+(s.data.count!=null?', '+s.data.count:'')+'<br/>';});return h;}},legend:{top:0,data:skuGroups},
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%'+(s.data.count!=null?', '+s.data.count:'')+'<br>';});return h;}},legend:{top:0,data:skuGroups},
     grid:{left:50,right:30,top:35,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
-    yAxis:{type:'value',name:'%',splitLine:{show:false},min:yr.min,max:yr.max},
+    yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max},
     series:series},true);
 }
 
@@ -1676,8 +1676,8 @@ function renderPartsRatioChart(agg){
     grid:{left:50,right:50,top:35,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
     yAxis:[
-      {type:'value',name:'%',splitLine:{show:false},min:yrL.min,max:yrL.max},
-      {type:'value',name:'1单%',min:yrR.min,max:yrR.max,axisLabel:{color:'#2578ED'},nameTextStyle:{color:'#2578ED'},splitLine:{show:false}}
+      {type:'value',splitLine:{show:false},min:yrL.min,max:yrL.max},
+      {type:'value',min:yrR.min,max:yrR.max,axisLabel:{color:'#2578ED'},nameTextStyle:{color:'#2578ED'},splitLine:{show:false}}
     ],
     series:series},true);
 }
