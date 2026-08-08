@@ -1001,6 +1001,7 @@ function renderAll(){
   renderManagerChart(agg);
   renderManagerTrendChart(agg);
   renderRegionChart(agg);
+  syncRegionTrendMgr(agg);
   renderRegionTrendChart(agg);
   _provAgg=agg;
   // 省份图表作为子面板，仅在可见时渲染
@@ -2132,6 +2133,46 @@ function renderRegionChart(agg){
 }
 
 // === 区域经理月度趋势（同大区经理模式） ===
+// 表头筛选联动：区域经理趋势的"大区经理"下拉跟随表头的大区经理/区域经理/网点/工程师筛选自动变化
+function syncRegionTrendMgr(agg){
+  var sel=document.getElementById('regionTrendMgr');
+  if(!sel) return;
+  var targetMgr=null;
+  // 表头筛选了工程师 → 工程师→网点→大区经理
+  if(FILTERS.engineer>=0 && agg && agg.engNetMap){
+    var eNet=agg.engNetMap[FILTERS.engineer];
+    if(eNet!=null && agg.netMgrMap && agg.netMgrMap[eNet]){
+      var mgrIdx=agg.netMgrMap[eNet][1];
+      if(mgrIdx>=0 && mgrIdx<DICT.managers.length) targetMgr=DICT.managers[mgrIdx];
+    }
+  }
+  // 表头筛选了网点 → 网点→大区经理
+  if(!targetMgr && FILTERS.networkTop20>=0 && FILTERS.networkTop20<DICT.net_codes.length){
+    var nri=DICT.net_region_mgr ? DICT.net_region_mgr[FILTERS.networkTop20] : -1;
+    if(nri>=0 && nri<DICT.region_managers.length){
+      var rmgIdx=DICT.region_mgr_to_mgr ? DICT.region_mgr_to_mgr[nri] : -1;
+      if(rmgIdx>=0 && rmgIdx<DICT.managers.length) targetMgr=DICT.managers[rmgIdx];
+    }
+  }
+  // 表头筛选了区域经理 → 映射到其大区经理
+  if(!targetMgr && FILTERS.regionManagers && FILTERS.regionManagers.length>0){
+    var rmIdx=DICT.region_managers.indexOf(FILTERS.regionManagers[0]);
+    if(rmIdx>=0){
+      var mgrIdx2=DICT.region_mgr_to_mgr ? DICT.region_mgr_to_mgr[rmIdx] : -1;
+      if(mgrIdx2>=0 && mgrIdx2<DICT.managers.length) targetMgr=DICT.managers[mgrIdx2];
+    }
+  }
+  // 表头筛选了大区经理 → 直接用
+  if(!targetMgr && FILTERS.managers && FILTERS.managers.length>0){
+    targetMgr=FILTERS.managers[0];
+  }
+  // 有目标且下拉当前值不同 → 更新（下拉有该选项才设）
+  if(targetMgr){
+    var hasOpt=false;
+    for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===targetMgr){ hasOpt=true; break; } }
+    if(hasOpt && sel.value!==targetMgr) sel.value=targetMgr;
+  }
+}
 function renderRegionTrendChart(agg){
   var ch=ensureChart('chartRegionTrend');
   var metric=document.getElementById('regionTrendMetric').value;
@@ -2459,8 +2500,13 @@ function exportMonthTrendXlsx(){
   aoa.push(head);
   for(var mi=0;mi<months.length;mi++){
     var row=[months[mi]];
-    series.forEach(function(s){
-      row.push((s.data&&typeof s.data[mi]!=='undefined')?s.data[mi]:'');
+    series.forEach(function(s,si){
+      var v=(s.data&&typeof s.data[mi]!=='undefined')?s.data[mi]:'';
+      // series data 可能是 {value,n,den} 对象，提取 value
+      if(typeof v==='object' && v!==null && typeof v.value!=='undefined') v=v.value;
+      // 第0列=总工单（不带%），其余率为百分比，值带%
+      if(si>0 && v!=='' && v!==null && typeof v!=='undefined') v = v+'%';
+      row.push(v);
     });
     aoa.push(row);
   }
