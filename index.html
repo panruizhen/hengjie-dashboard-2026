@@ -470,9 +470,7 @@
   <iframe id="partsIframe" data-parts-src="配件一次就好/配件仪表盘_20260731_1127.html" style="width:100%;height:4800px;border:none;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);background:#fff;display:block;" onload="setTimeout(function(){ try{ if(parent && parent.sendPartsFilter) parent.sendPartsFilter(); }catch(e){} },100);"></iframe>
 </div>
 
-  <div class="footer">
-    恒洁2026一次就好率仪表盘 · 数据源：按约明细报表-汇总2026财年.xlsx · 生成时间：2026-07-17 10:56:52<br>
-    五大指标口径：净按约率=(净按约=是)/总工单 · 一次就好率=(是否一次就好=是)/总工单 · 换件一次就好率=(使用配件=1且一次就好=是)/(使用配件=1) · 净按约且一次就好率=(净按约=是且一次就好=是)/总工单 · 换件比例=(使用配件=1)/总工单
+  <div class="footer" style="display:none;">
   </div>
 </div>
 
@@ -1096,15 +1094,27 @@ function renderAll(){
     // 网点（工单量大且否工单增加多的）
     var nets=DICT.net_names||[];
     var provByNet=DICT.prov_by_net||[];
+    var netRegionMgr=DICT.net_region_mgr||[];
+    // 筛选器选中区域经理时，只显示其旗下网点
+    var _netRegionFilter = (FILTERS.regionManagers&&FILTERS.regionManagers.length>0) ? FILTERS.regionManagers : null;
     var netImpacts=[];
     (nets||[]).forEach(function(nm,ni){
+      // 区域经理过滤：网点所属区域经理必须在选中列表内
+      if(_netRegionFilter){
+        var _nri = netRegionMgr[ni];
+        var _nmgr = (_nri!=null && _nri<DICT.region_managers.length) ? DICT.region_managers[_nri] : null;
+        if(!_nmgr || _netRegionFilter.indexOf(_nmgr)<0) return;
+      }
       var arr=agg.byNet[ni]; if(!arr) return;
       var mc={total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0}, mp={total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0};
       var mi=FILTERS.monthEnd; var c=arr[mi]; if(!c) return;
       mc.total+=c.total; mc.njy+=c.njy; mc.ycjh+=c.ycjh; mc.parts+=c.parts; mc.parts_ycjh+=c.parts_ycjh; mc.both+=c.both;
       var pi=FILTERS.monthEnd-1; var d=arr[pi]; if(!d) return;
       mp.total+=d.total; mp.njy+=d.njy; mp.ycjh+=d.ycjh; mp.parts+=d.parts; mp.parts_ycjh+=d.parts_ycjh; mp.both+=d.both;
-      if(mc.total<100||mp.total<50) return;
+      // 有区域经理筛选时降低阈值（让该区域经理的网点能显示）；无筛选保持原阈值
+      var minCur = _netRegionFilter ? 30 : 100;
+      var minPrev = _netRegionFilter ? 10 : 50;
+      if(mc.total<minCur||mp.total<minPrev) return;
       var cr_raw=rate5(mc)[selMetric];
       var pr_raw=rate5(mp)[selMetric];
       var cr=+(cr_raw).toFixed(1);
@@ -1113,10 +1123,14 @@ function renderAll(){
       netImpacts.push({name:nm,cur:cr,prev:pr,diff:+(cr_raw-pr_raw).toFixed(1),total:mc.total,fail_add:cf-pf});
     });
     netImpacts.sort(function(a,b){return Math.abs(b.diff)*b.total-Math.abs(a.diff)*a.total;});
-    var netTop=netImpacts.filter(function(x){return _worse(x.diff)&&x.total>=200;}).slice(0,3);
+    var _netMinTotal = _netRegionFilter ? 30 : 200;  // 区域经理筛选时降低显示阈值
+    // 有区域经理筛选时显示该区域经理工单量最大的网点（不限涨跌）；无筛选时显示率降幅突出的
+    var netTop = _netRegionFilter
+      ? netImpacts.slice().sort(function(a,b){return b.total-a.total;}).filter(function(x){return x.total>=_netMinTotal;}).slice(0,3)
+      : netImpacts.filter(function(x){return _worse(x.diff)&&x.total>=_netMinTotal;}).slice(0,3);
     // 一次就好否工单增加最多的
     netImpacts.sort(function(a,b){return b.fail_add-a.fail_add;});
-    var netFailTop=netImpacts.filter(function(x){return x.fail_add>0&&x.total>=200;}).slice(0,3);
+    var netFailTop=netImpacts.filter(function(x){return x.fail_add>0&&x.total>=_netMinTotal;}).slice(0,3);
     // 组装HTML
     var lines=[];
     function s(v){ return (v>0?'+':'')+v; }
@@ -1168,7 +1182,8 @@ function renderAll(){
     // Line 5: 网点
     var netStr='';
     netTop.forEach(function(m,i){ netStr+=(i>0?'、':'')+m.name.substr(0,12)+(m.name.length>12?'..':'')+m.total+'单率'+m.prev+'%→'+m.cur+'%（'+m.diff+'%）'; });
-    lines.push('网点：'+netStr+'工单量大且率'+(_isPartsRatio?'升幅':'降幅')+'突出');
+    var netSuffix = _netRegionFilter ? '为本区域经理工单量居前网点' : ('工单量大且率'+(_isPartsRatio?'升幅':'降幅')+'突出');
+    lines.push('网点：'+netStr+netSuffix);
     document.getElementById('monthlySummary').innerHTML=
       '<div style=\"color:#dc2626;font-size:12px;line-height:1.9;\">'+
       lines.map(function(l){ return '• '+l; }).join('<br>')+
@@ -1194,14 +1209,24 @@ function renderKPI(agg){
     '换件比例': {num: cmC.parts, den: cmC.total}
   };
 
-  // === 全年卡片（精简：仅显示指标名+率值） ===
+  // === 全年卡片（指标名+率值+分子/分母，与当月格式一致） ===
+  var gC=agg.globalC;
+  var yearNumDenMap = {
+    '净按约率': {num: gC.njy, den: gC.total},
+    '一次就好率': {num: gC.ycjh, den: gC.total},
+    '换件一次就好率': {num: gC.parts_ycjh, den: gC.parts},
+    '净按约且一次就好率': {num: gC.both, den: gC.total},
+    '换件比例': {num: gC.parts, den: gC.total}
+  };
   var htmlY='';
   METRICS.forEach(function(m){
     var color=COLORS[m];
     var val=r[m];
+    var ynd=yearNumDenMap[m];
     htmlY+='<div class="kpi-card" style="border-top-color:'+color+'">'+
       '<div class="kpi-name">'+m+'</div>'+
       '<div class="kpi-val" style="color:'+color+'">'+(Math.round(val*10)/10).toFixed(1)+'<span class="kpi-unit">%</span></div>'+
+      '<div class="kpi-sub">'+ynd.num+'/'+ynd.den+'</div>'+
       '</div>';
   });
   document.getElementById('kpiRowYear').innerHTML=htmlY;
@@ -1236,22 +1261,33 @@ function renderMonthChart(agg){
   var months=MONTHS.slice(FILTERS.monthStart, FILTERS.monthEnd+1);
   var data=agg.byMonth.slice(FILTERS.monthStart, FILTERS.monthEnd+1);
   var totalArr=[], mSeries=[];
-  METRICS.forEach(function(m){ mSeries.push({name:m,type:'line',yAxisIndex:1,data:[],smooth:true,symbolSize:6,lineStyle:{width:2},itemStyle:{color:COLORS[m]}}); });
+  // 每月每个指标的分子/分母（用于label展示公式）
+  var _ndMap={
+    '净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},
+    '换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},
+    '换件比例':function(c){return {n:c.parts,d:c.total};}
+  };
+  function _fmtM(p){ return p.value!=null ? p.value+'%' : ''; }
+  METRICS.forEach(function(m){ mSeries.push({name:m,type:'line',yAxisIndex:1,data:[],smooth:0.7,symbolSize:6,lineStyle:{width:2},itemStyle:{color:COLORS[m]}}); });
   data.forEach(function(c){
     var r=rate5(c);
     totalArr.push(c.total);
-    METRICS.forEach(function(m,i){ mSeries[i].data.push(d1(r[m])); });
+    METRICS.forEach(function(m,i){
+      var nd=_ndMap[m](c);
+      mSeries[i].data.push({value:d1(r[m]), n:nd.n, den:nd.d});
+    });
   });
-  // 动态Y轴：收集所有率值计算范围
+  // 动态Y轴：收集所有率值计算范围（data 是 {value,n,den} 对象，需提取 value）
   var allRateVals=[];
-  mSeries.forEach(function(s){ allRateVals=allRateVals.concat(s.data); });
+  mSeries.forEach(function(s){ s.data.forEach(function(d){ allRateVals.push(typeof d==='object' && d!==null ? d.value : d); }); });
   var yr=calcYRange(allRateVals);
   ch.setOption({
     tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){
       var html='<b>'+p[0].axisValue+'</b><br/>';
       p.forEach(function(s,i){
+        var d=s.data||{};
         if(i===0) html+=s.marker+' '+s.seriesName+': '+s.value+'<br/>';
-        else html+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';
+        else { html+=s.marker+' '+s.seriesName+': '+s.value+'%'; if(d.den>0) html+=' ('+d.n+'/'+d.den+')'; html+='<br/>'; }
       });
       return html;
     }},
@@ -1259,7 +1295,9 @@ function renderMonthChart(agg){
     grid:{left:60,right:70,top:40,bottom:40},
     xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{rotate:0}},
     yAxis:[{type:'value',name:'工单量',splitLine:{show:false},position:'left'},
-      {type:'value',name:'率(%)',splitLine:{show:false},position:'right',min:yr.min,max:yr.max}],
+      {type:'value',name:'率(%)',splitLine:{show:false},position:'right',
+        min:Math.max(0, +((yr.min-2)).toFixed(1)), max:Math.min(100, +((yr.max+2)).toFixed(1)),
+        splitNumber:6, axisLabel:{formatter:'{value}%',color:'#64748b'}}],
     series:[{name:'总工单',type:'bar',data:totalArr,itemStyle:{color:'#94a3b8'},barWidth:'40%'}].concat(mSeries)
   },true);
 }
@@ -1279,17 +1317,18 @@ function renderSourceChart(agg){
     if(metric==='工单占比'){
       data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c,mi){
         var total=agg.byMonth[FILTERS.monthStart+mi].total;
-        return total? d1(c.total/total*100):0;
+        return total? {value:d1(c.total/total*100), n:c.total, den:total}:{value:0,n:0,den:total||0};
       });
     } else {
-      data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ return d1(rate5(c)[metric]); });
+      var _ndS={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
+      data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ var nd=_ndS[metric](c); return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d}; });
     }
     series.push({name:DICT.sources[k],type:'line',data:data,symbolSize:6,lineStyle:{width:2},smooth:true});
   });
   var allVals=[];
-  series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',name:'%',splitLine:{show:false},min:yr.min,max:yr.max},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderGoldChart(agg){
@@ -1302,30 +1341,31 @@ function renderGoldChart(agg){
   else { goldKeys=[1,0]; }
   goldKeys.forEach(function(k){
     var arr=agg.byGold[k]; if(!arr) return;
-    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ return d1(rate5(c)[metric]); });
+    var _ndG={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
+    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ var nd=_ndG[metric](c); return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d}; });
     series.push({name:(k===1?'金牌:是':'金牌:否'),type:'line',data:data,symbolSize:6,lineStyle:{width:2},smooth:true});
   });
   // 金牌工单占比 = 金牌工程师为是的工单 / 总工单量
   var goldRatioData=[];
   for(var mi=FILTERS.monthStart;mi<=FILTERS.monthEnd;mi++){
     var goldTotal=agg.byGold[1]? agg.byGold[1][mi].total:0;
-    goldRatioData.push(agg.byMonth[mi].total? d1(goldTotal/agg.byMonth[mi].total*100):0);
+    goldRatioData.push(agg.byMonth[mi].total? {value:d1(goldTotal/agg.byMonth[mi].total*100), n:goldTotal, den:agg.byMonth[mi].total}:{value:0,n:0,den:agg.byMonth[mi].total||0});
   }
   series.push({name:'金牌工单占比',type:'line',data:goldRatioData,yAxisIndex:1,symbolSize:6,lineStyle:{width:2,type:'dashed'},itemStyle:{color:'#a855f7'},smooth:true});
   // 左侧Y轴：5大指标动态范围
   var metricVals=[];
-  series.forEach(function(s){ if(s.name!=='金牌工单占比') metricVals=metricVals.concat(s.data); });
+  series.forEach(function(s){ if(s.name!=='金牌工单占比') metricVals=metricVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yrL=metricVals.length? calcYRange(metricVals):{min:0,max:100};
   // 右侧Y轴：金牌工单占比动态范围
-  var yrR=calcYRange(goldRatioData);
+  var yrR=calcYRange(goldRatioData.map(function(d){return d.value!=null?d.value:d;}));
   ch.setOption({
-    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';});return h;}},
+    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
     legend:{top:0},
     grid:{left:50,right:60,top:35,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
     yAxis:[
-      {type:'value',name:'%',splitLine:{show:false},min:yrL.min,max:yrL.max},
-      {type:'value',name:'金牌占比%',min:yrR.min,max:yrR.max,axisLabel:{color:'#a855f7'},nameTextStyle:{color:'#a855f7'},splitLine:{show:false}}
+      {type:'value',splitLine:{show:false},min:yrL.min,max:yrL.max,axisLabel:{formatter:'{value}%'}},
+      {type:'value',min:yrR.min,max:yrR.max,axisLabel:{color:'#a855f7',formatter:'{value}%'},splitLine:{show:false}}
     ],
     series:series
   },true);
@@ -1339,21 +1379,24 @@ function renderNtypeChart(agg){
   var ntypeKeys;
   if(FILTERS.networkTypes.length>0){ ntypeKeys=FILTERS.networkTypes.map(function(s){return DICT.network_types.indexOf(s);}).filter(function(i){return i>=0;}); }
   else { ntypeKeys=Object.keys(agg.byNtype).map(Number); }
+  var _ndN={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
   ntypeKeys.forEach(function(k){
     var arr=agg.byNtype[k]; if(!arr) return;
     var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c,i){
       if(metric==='工单占比'){
         var mi=i+FILTERS.monthStart;
-        return agg.byMonth[mi].total? d1(+(c.total/agg.byMonth[mi].total*100).toFixed(2)):0;
+        var total=agg.byMonth[mi].total;
+        return {value: total? d1(+(c.total/total*100).toFixed(2)):0, n:c.total, den:total||0};
       }
-      return d1(rate5(c)[metric]);
+      var nd=_ndN[metric](c);
+      return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d};
     });
     series.push({name:DICT.network_types[k],type:'line',data:data,symbolSize:6,lineStyle:{width:2},smooth:true});
   });
   var allVals=[];
-  series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',name:'%',splitLine:{show:false},min:yr.min,max:yr.max},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderPersonChart(agg){
@@ -1362,6 +1405,7 @@ function renderPersonChart(agg){
   var months=MONTHS.slice(FILTERS.monthStart, FILTERS.monthEnd+1);
   var series=[];
   var personKeys=Object.keys(agg.byPerson).map(Number).sort();
+  var _ndP2={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
   personKeys.forEach(function(k){
     var arr=agg.byPerson[k]; if(!arr) return;
     var name=DICT.person_attrs[k]||'';
@@ -1370,17 +1414,17 @@ function renderPersonChart(agg){
     if(metric==='工单占比'){
       data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c,mi){
         var total=agg.byMonth[FILTERS.monthStart+mi].total;
-        return total? d1(c.total/total*100):0;
+        return {value: total? d1(c.total/total*100):0, n:c.total, den:total||0};
       });
     } else {
-      data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ return d1(rate5(c)[metric]); });
+      data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ var nd=_ndP2[metric](c); return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d}; });
     }
     series.push({name:name,type:'line',data:data,symbolSize:6,lineStyle:{width:2},smooth:0.5}); // 增强曲线曲度
   });
   var allVals=[];
-  series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',name:'%',splitLine:{show:false},min:yr.min,max:yr.max},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderDeptChart(agg){
@@ -1393,33 +1437,49 @@ function renderDeptChart(agg){
   var deptSum={};
   df.forEach(function(d){ for(var k in d){ if(parseInt(k)===0) continue; deptSum[k]=(deptSum[k]||0)+d[k]; } });
   var deptArr=Object.keys(deptSum).map(function(k){ return {k:k,v:deptSum[k]}; }).sort(function(a,b){return b.v-a.v;});
-  var topDepts=deptArr.slice(0,7).map(function(x){return x.k;});
+  // TOP7 排除"无"（单独处理：默认隐藏+标灰）
+  var noneIdxDept = (DICT.depts||[]).indexOf('无');
+  var topDepts=deptArr.filter(function(x){ return parseInt(x.k)!==noneIdxDept; }).slice(0,7).map(function(x){return x.k;});
   function deptName(k){ k=parseInt(k); return DICT.depts[k]||('dept'+k); }
   var series=[], legendData=[];
   var colors=['#2578ED','#36C66F','#FF7A2F','#F25C98','#7A8699','#a855f7','#0ea5e9'];
   topDepts.forEach(function(k,i){
     legendData.push(deptName(k));
     series.push({name:deptName(k),type:'line',smooth:true,symbolSize:5,lineStyle:{width:2},itemStyle:{color:colors[i%colors.length]},
-      data:df.map(function(d,mi){ var cnt=d[k]||0; return monthTotals[mi]? d1(+(cnt/monthTotals[mi]*100).toFixed(2)):0; })});
+      data:df.map(function(d,mi){ var cnt=d[k]||0; return {value: monthTotals[mi]? d1(+(cnt/monthTotals[mi]*100).toFixed(2)):0, n:cnt, den:monthTotals[mi]||0}; })});
   });
-  // 其他已知部门
+  // "无"（dept索引4）：默认隐藏（图例不勾选）+ 标签标灰
+  var noneIdx = (DICT.depts||[]).indexOf('无');
+  if(noneIdx>=0){
+    var noneData=df.map(function(d,mi){ var cnt=d[noneIdx]||0; return {value: monthTotals[mi]? d1(+(cnt/monthTotals[mi]*100).toFixed(2)):0, n:cnt, den:monthTotals[mi]||0}; });
+    if(noneData.some(function(v){return v.value>0;})){
+      legendData.push('无');
+      series.push({name:'无',type:'line',smooth:true,symbolSize:5,lineStyle:{width:2,dash:[4,4]},itemStyle:{color:'#94a3b8'},data:noneData});
+    }
+  }
+  // 其他已知部门（排除"无"和TOP部门）
   var otherData=df.map(function(d,mi){
-    var cnt=0; for(var kk in d){ if(parseInt(kk)===0 || topDepts.indexOf(kk)>=0) continue; cnt+=d[kk]; }
-    return monthTotals[mi]? d1(+(cnt/monthTotals[mi]*100).toFixed(2)):0;
+    var cnt=0; for(var kk in d){ if(parseInt(kk)===0 || topDepts.indexOf(kk)>=0 || parseInt(kk)===noneIdxDept) continue; cnt+=d[kk]; }
+    return {value: monthTotals[mi]? d1(+(cnt/monthTotals[mi]*100).toFixed(2)):0, n:cnt, den:monthTotals[mi]||0};
   });
-  if(otherData.some(function(v){return v>0;})){
+  if(otherData.some(function(v){return v.value>0;})){
     legendData.push('其他');
     series.push({name:'其他',type:'line',smooth:true,symbolSize:5,lineStyle:{width:2,dash:[4,4]},data:otherData});
   }
   // 动态Y轴
-  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
+  // 图例：'无'默认隐藏且标签标灰（其余正常）
+  var legendSel={};
+  series.forEach(function(s){ legendSel[s.name]=true; });
+  legendSel['无']=false;
+  var legendDataFinal=legendData.map(function(nm){ return nm==='无' ? {name:nm, textStyle:{color:'#94a3b8'}} : nm; });
   ch.setOption({
-    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>';});return h;}},
-    legend:{top:0,type:'scroll',data:legendData},
+    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
+    legend:{top:0,type:'scroll',data:legendDataFinal,selected:legendSel},
     grid:{left:50,right:30,top:40,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
-    yAxis:{type:'value',name:'%',splitLine:{show:false},min:yr.min,max:yr.max},
+    yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},
     series:series
   },true);
 }
@@ -1629,10 +1689,12 @@ function renderPartsChart(agg){
       var arr=agg.byParts[i];
       if(metric==='工单占比'){
         var ratio=arr? d1(arr[mi].total/agg.byMonth[mi].total*100):0;
-        data.push(arr?{value:ratio,count:arr[mi].total}:{value:0,count:0});
+        data.push(arr?{value:ratio,count:arr[mi].total,den:agg.byMonth[mi].total}:{value:0,count:0,den:agg.byMonth[mi].total||0});
       } else {
         var val=arr? d1(rate5(arr[mi])[metric]):0;
-        data.push(arr?{value:val,count:arr[mi].total}:{value:0,count:0});
+        var _ndP={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
+        var nd=arr?_ndP[metric](arr[mi]):{n:0,d:0};
+        data.push(arr?{value:val,count:arr[mi].total,n:nd.n,den:nd.d}:{value:0,count:0,n:0,den:0});
       }
     }
     series.push({name:sg,type:'line',smooth:true,symbolSize:6,lineStyle:{width:2},
@@ -1640,10 +1702,10 @@ function renderPartsChart(agg){
   });
   var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%'+(s.data.count!=null?', '+s.data.count:'')+'<br>';});return h;}},legend:{top:0,data:skuGroups},
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+(d.n!=null?d.n:d.count)+'/'+d.den+')';h+='<br>';});return h;}},legend:{top:0,data:skuGroups},
     grid:{left:50,right:30,top:35,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
-    yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max},
+    yAxis:{type:'value',splitLine:{show:false},min:Math.max(0,yr.min),max:Math.min(100,yr.max),axisLabel:{formatter:'{value}%'}},
     series:series},true);
 }
 
@@ -1662,7 +1724,7 @@ function renderPartsRatioChart(agg){
     for(var mi=FILTERS.monthStart;mi<=FILTERS.monthEnd;mi++){
       var partsTotal=agg.byMonth[mi].parts;
       var skuTotal=agg.byParts[idx]? agg.byParts[idx][mi].total:0;
-      data.push(partsTotal? {value:d1(skuTotal/partsTotal*100),count:skuTotal}:{value:0,count:0});
+      data.push(partsTotal? {value:d1(skuTotal/partsTotal*100),count:skuTotal,den:partsTotal}:{value:0,count:0,den:partsTotal||0});
     }
     series.push({name:sg,type:'line',smooth:true,symbolSize:6,lineStyle:{width:2},
       data:data,itemStyle:{color:skuColors[i]},yAxisIndex:i===0?1:0});
@@ -1672,12 +1734,12 @@ function renderPartsRatioChart(agg){
   var yrL=leftVals.length? calcYRange(leftVals):{min:0,max:100};
   // 右侧Y轴：1单
   var yrR=calcYRange(series[0].data.map(function(d){return d.value;}));
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){h+=s.marker+' '+s.seriesName+': '+s.value+'%'+(s.data.count!=null?', '+s.data.count:'')+'<br/>';});return h;}},legend:{top:0,data:skuNames},
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.count+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0,data:skuNames},
     grid:{left:50,right:50,top:35,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
     yAxis:[
-      {type:'value',splitLine:{show:false},min:yrL.min,max:yrL.max},
-      {type:'value',min:yrR.min,max:yrR.max,axisLabel:{color:'#2578ED'},nameTextStyle:{color:'#2578ED'},splitLine:{show:false}}
+      {type:'value',splitLine:{show:false},min:Math.max(0,yrL.min),max:Math.min(100,yrL.max),axisLabel:{formatter:'{value}%'}},
+      {type:'value',min:Math.max(0,yrR.min),max:Math.min(100,yrR.max),axisLabel:{color:'#2578ED',formatter:'{value}%'},splitLine:{show:false}}
     ],
     series:series},true);
 }
@@ -1688,18 +1750,21 @@ function renderManagerChart(agg){
   var metric=document.getElementById('mgrMetric').value;
   var managers=DICT.managers||[];
   var lastM=FILTERS.monthEnd;
+  var _ndMC={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
   // 只保留有数据的经理（总工单>0）
   var mgrList=[];
   managers.forEach(function(name,i){
     var arr=agg.byManager[i];
     if(!arr) return;
     var total=arr.reduce(function(s,c){return s+c.total;},0);
-    if(total>0) mgrList.push({idx:i,name:name,total:total,
-      year:d1(rate5(arr.reduce(function(a,c){
-        a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both;
-        return a;
-      },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0}))[metric]),
-      month: arr[lastM]? d1(rate5(arr[lastM])[metric]):0});
+    if(total>0){
+      var yc=arr.reduce(function(a,c){ a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both; return a; },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0});
+      var mc=arr[lastM]||{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0};
+      var ynd=_ndMC[metric](yc), mnd=_ndMC[metric](mc);
+      mgrList.push({idx:i,name:name,total:total,
+        year:d1(rate5(yc)[metric]), month:d1(rate5(mc)[metric]),
+        yearNd:ynd, monthNd:mnd});
+    }
   });
   mgrList.sort(function(a,b){return b.year-a.year;});
   // 展示TOP15，否则太挤
@@ -1707,14 +1772,15 @@ function renderManagerChart(agg){
   // 默认按当月率升序排序（最差的在前）
   mgrList.sort(function(a,b){return a.month-b.month;});
   var names=mgrList.map(function(x){return x.name;}).reverse();
-  var yearVals=mgrList.map(function(x){return x.year;}).reverse();
-  var monthVals=mgrList.map(function(x){return x.month;}).reverse();
+  var yearVals=mgrList.map(function(x){return {value:x.year, n:x.yearNd.n, den:x.yearNd.d};}).reverse();
+  var monthVals=mgrList.map(function(x){return {value:x.month, n:x.monthNd.n, den:x.monthNd.d};}).reverse();
+  function _mgrTip(p){
+    var html='<b>'+p[0].axisValue+'</b><br/>';
+    p.forEach(function(s){ var d=s.data||{}; html+=s.marker+' '+s.seriesName+': '+s.value+'%'; if(d.den>0) html+=' ('+d.n+'/'+d.den+')'; html+='<br/>'; });
+    return html;
+  }
   ch.setOption({
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
-      var html='<b>'+p[0].axisValue+'</b><br/>';
-      p.forEach(function(s){ html+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>'; });
-      return html;
-    }},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:_mgrTip},
     legend:{data:['全年累计','当月('+MONTHS[lastM]+')'],top:0},
     grid:{left:70,right:60,top:35,bottom:20},
     xAxis:{type:'value',name:'%',splitLine:{show:false}},
@@ -1791,16 +1857,18 @@ function renderManagerTrendChart(agg){
   mgrTop.sort(function(a,b){return b.total-a.total;});
   if(mgrTop.length>15) mgrTop=mgrTop.slice(0,15);
   var colors=['#2578ED','#36C66F','#FF7A2F','#F25C98','#7A8699','#a855f7','#0ea5e9','#dc2626','#f97316','#14b8a6','#8b5cf6','#ec4899','#06b6d4','#84cc16','#eab308'];
+  var _ndT={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
+  function _fmtT(p){ return p.value!=null ? p.value+'%' : ''; }
   var series=[];
   mgrTop.forEach(function(m,i){
     var arr=agg.byManager[m.idx];
-    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ return d1(rate5(c)[metric]); });
+    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ var nd=_ndT[metric](c); return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d}; });
     series.push({name:m.name,type:'line',smooth:true,symbolSize:5,lineStyle:{width:2},itemStyle:{color:colors[i%colors.length]},data:data});
   });
-  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
   ch.setOption({
-    tooltip:{trigger:'axis'},
+    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
     legend:{top:0,type:'scroll',data:series.map(function(s){return s.name;})},
     grid:{left:50,right:30,top:45,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
@@ -1992,17 +2060,20 @@ function renderRegionChart(agg){
   var metric=document.getElementById('regionMetric').value;
   var managers=DICT.region_managers||[];
   var lastM=FILTERS.monthEnd;
+  var _ndRC={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
   var mgrList=[];
   managers.forEach(function(name,i){
     var arr=agg.byRegionMgr[i];
     if(!arr) return;
     var total=arr.reduce(function(s,c){return s+c.total;},0);
-    if(total>0) mgrList.push({idx:i,name:name,total:total,
-      year:d1(rate5(arr.reduce(function(a,c){
-        a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both;
-        return a;
-      },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0}))[metric]),
-      month: arr[lastM]? d1(rate5(arr[lastM])[metric]):0});
+    if(total>0){
+      var yc=arr.reduce(function(a,c){ a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both; return a; },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0});
+      var mc=arr[lastM]||{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0};
+      var ynd=_ndRC[metric](yc), mnd=_ndRC[metric](mc);
+      mgrList.push({idx:i,name:name,total:total,
+        year:d1(rate5(yc)[metric]), month:d1(rate5(mc)[metric]),
+        yearNd:ynd, monthNd:mnd});
+    }
   });
   // 统一使用chart-sm高度(300px)，与左侧大区经理一致
   document.getElementById('chartRegionMgr').style.height='300px';
@@ -2010,14 +2081,15 @@ function renderRegionChart(agg){
   mgrList.sort(function(a,b){return a.month-b.month;});
   if(mgrList.length>8) mgrList=mgrList.slice(0,8);
   var names=mgrList.map(function(x){return x.name;}).reverse();
-  var yearVals=mgrList.map(function(x){return x.year;}).reverse();
-  var monthVals=mgrList.map(function(x){return x.month;}).reverse();
+  var yearVals=mgrList.map(function(x){return {value:x.year, n:x.yearNd.n, den:x.yearNd.d};}).reverse();
+  var monthVals=mgrList.map(function(x){return {value:x.month, n:x.monthNd.n, den:x.monthNd.d};}).reverse();
+  function _regTip(p){
+    var html='<b>'+p[0].axisValue+'</b><br/>';
+    p.forEach(function(s){ var d=s.data||{}; html+=s.marker+' '+s.seriesName+': '+s.value+'%'; if(d.den>0) html+=' ('+d.n+'/'+d.den+')'; html+='<br/>'; });
+    return html;
+  }
   ch.setOption({
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
-      var html='<b>'+p[0].axisValue+'</b><br/>';
-      p.forEach(function(s){ html+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>'; });
-      return html;
-    }},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:_regTip},
     legend:{data:['全年累计','当月('+MONTHS[lastM]+')'],top:0},
     grid:{left:70,right:60,top:35,bottom:20},
     xAxis:{type:'value',name:'%',splitLine:{show:false}},
@@ -2083,16 +2155,18 @@ function renderRegionTrendChart(agg){
   mgrTop.sort(function(a,b){return a.val-b.val;});  // 最差在前
   if(!selectedMgr && mgrTop.length>8) mgrTop=mgrTop.slice(0,8);
   var colors=['#2578ED','#36C66F','#FF7A2F','#F25C98','#7A8699','#a855f7','#0ea5e9','#dc2626'];
+  var _ndR={'净按约率':function(c){return {n:c.njy,d:c.total};},'一次就好率':function(c){return {n:c.ycjh,d:c.total};},'换件一次就好率':function(c){return {n:c.parts_ycjh,d:c.parts};},'净按约且一次就好率':function(c){return {n:c.both,d:c.total};},'换件比例':function(c){return {n:c.parts,d:c.total};}};
+  function _fmtR(p){ return p.value!=null ? p.value+'%' : ''; }
   var series=[];
   mgrTop.forEach(function(m,i){
     var arr=agg.byRegionMgr[m.idx];
-    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ return d1(rate5(c)[metric]); });
+    var data=arr.slice(FILTERS.monthStart, FILTERS.monthEnd+1).map(function(c){ var nd=_ndR[metric](c); return {value:d1(rate5(c)[metric]), n:nd.n, den:nd.d}; });
     series.push({name:m.name,type:'line',smooth:true,symbolSize:5,lineStyle:{width:2},itemStyle:{color:colors[i%colors.length]},data:data});
   });
-  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data); });
+  var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
   ch.setOption({
-    tooltip:{trigger:'axis'},
+    tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
     legend:{top:0,type:'scroll',data:series.map(function(s){return s.name;})},
     grid:{left:50,right:30,top:45,bottom:35},
     xAxis:{type:'category',splitLine:{show:false},data:months},
@@ -2415,12 +2489,18 @@ function renderNetChart(agg){
     var total=arr.reduce(function(s,c){return s+c.total;},0);
     if(total<=0) return;
     var name=idx<netNames.length?netNames[idx]:('网点#'+idx);
+    // 全年/当月 的分子分母（按当前选中指标）
+    function _nd(c){ return {
+      '净按约率':{n:c.njy,d:c.total},'一次就好率':{n:c.ycjh,d:c.total},
+      '换件一次就好率':{n:c.parts_ycjh,d:c.parts},'净按约且一次就好率':{n:c.both,d:c.total},
+      '换件比例':{n:c.parts,d:c.total}
+    }[metric]||{n:0,d:0}; }
+    var yearC=arr.reduce(function(a,c){ a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both; return a; },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0});
+    var monthC=arr[lastM]||{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0};
+    var ynd=_nd(yearC), mnd=_nd(monthC);
     netList.push({idx:idx,name:name,total:total,
-      year:d1(rate5(arr.reduce(function(a,c){
-        a.total+=c.total;a.njy+=c.njy;a.ycjh+=c.ycjh;a.parts+=c.parts;a.parts_ycjh+=c.parts_ycjh;a.both+=c.both;
-        return a;
-      },{total:0,njy:0,ycjh:0,parts:0,parts_ycjh:0,both:0,fail:0}))[metric]),
-      month: arr[lastM]? d1(rate5(arr[lastM])[metric]):0});
+      year:d1(rate5(yearC)[metric]), month:d1(rate5(monthC)[metric]),
+      yearNd:ynd, monthNd:mnd});
   });
   if(netList.length===0){ document.getElementById('chartNet').innerHTML='<div style="text-align:center;padding:40px;color:#94a3b8;">暂无网点数据</div>'; return; }
   // 按工单量降序取TOP20
@@ -2429,23 +2509,32 @@ function renderNetChart(agg){
   // 按率升序：默认当月率，图例点'全年累计'切换为年率
   netList.sort(function(a,b){return a.month-b.month;});
   var names=netList.map(function(x){return x.name;}).reverse();
-  var yearVals=netList.map(function(x){return x.year;}).reverse();
-  var monthVals=netList.map(function(x){return x.month;}).reverse();
+  var yearVals=netList.map(function(x){return {value:x.year, num:x.yearNd?x.yearNd.n:0, den:x.yearNd?x.yearNd.d:0};}).reverse();
+  var monthVals=netList.map(function(x){return {value:x.month, num:x.monthNd?x.monthNd.n:0, den:x.monthNd?x.monthNd.d:0};}).reverse();
+  function _fmt(p){ return p.value!=null ? p.value+'%' : ''; }
+  function _tooltipHtml(p){
+    var html='<b>'+p[0].axisValue+'</b><br/>';
+    p.forEach(function(s){
+      var nd=s.data||{};
+      html+=s.marker+' '+s.seriesName+': '+s.value+'%';
+      if(nd.den>0) html+=' ('+nd.num+'/'+nd.den+')';
+      html+='<br/>';
+    });
+    return html;
+  }
   document.getElementById('chartNet').style.height=Math.max(300,Math.min(netList.length*40,600))+'px';
   ch.resize();
   ch.setOption({
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
-      var html='<b>'+p[0].axisValue+'</b><br/>';
-      p.forEach(function(s){ html+=s.marker+' '+s.seriesName+': '+s.value+'%<br/>'; });
-      return html;
-    }},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:_tooltipHtml},
     legend:{data:['全年累计','当月('+MONTHS[lastM]+')'],top:0},
     grid:{left:160,right:60,top:35,bottom:30},
     xAxis:{type:'value',name:'%',splitLine:{show:false}},
     yAxis:{type:'category',splitLine:{show:false},data:names,axisLabel:{fontSize:10}},
     series:[
-      {name:'全年累计',type:'bar',data:yearVals,itemStyle:{color:'#2563ED'},label:{show:true,position:'right',formatter:'{c}%'}},
-      {name:'当月('+MONTHS[lastM]+')',type:'bar',data:monthVals,itemStyle:{color:'#93c5fd'},label:{show:true,position:'right',formatter:'{c}%'}}
+      {name:'全年累计',type:'bar',data:yearVals,itemStyle:{color:'#2563ED'},
+        label:{show:true,position:'right',formatter:_fmt}},
+      {name:'当月('+MONTHS[lastM]+')',type:'bar',data:monthVals,itemStyle:{color:'#93c5fd'},
+        label:{show:true,position:'right',formatter:_fmt}}
     ]
   },true);
   // 图例点击切换排序（保留图例显隐状态）
@@ -2459,9 +2548,9 @@ function renderNetChart(agg){
       if(mode==='year') sorted.sort(function(a,b){return a.year-b.year;});
       else sorted.sort(function(a,b){return a.month-b.month;});
       var n=sorted.map(function(x){return x.name;}).reverse();
-      var yv=sorted.map(function(x){return x.year;}).reverse();
-      var mv=sorted.map(function(x){return x.month;}).reverse();
-      chart.setOption({yAxis:{type:'category',splitLine:{show:false},data:n,axisLabel:{fontSize:10}},series:[{name:'全年累计',data:yv},{name:mName,data:mv}]}, false);
+      var yv=sorted.map(function(x){return {value:x.year, num:x.yearNd?x.yearNd.n:0, den:x.yearNd?x.yearNd.d:0};}).reverse();
+      var mv=sorted.map(function(x){return {value:x.month, num:x.monthNd?x.monthNd.n:0, den:x.monthNd?x.monthNd.d:0};}).reverse();
+      chart.setOption({yAxis:{type:'category',splitLine:{show:false},data:n,axisLabel:{fontSize:10}},series:[{name:'全年累计',data:yv,label:{show:true,position:'right',formatter:_fmt}},{name:mName,data:mv,label:{show:true,position:'right',formatter:_fmt}}]}, false);
     });
   })(netList.slice(), ch, lastM);
 }
