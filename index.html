@@ -904,11 +904,11 @@ function addC(c, njy, ycjh, parts, isfail){
 function rate5(c){
   return {
     总工单:c.total,
-    净按约率: c.total? +(c.njy/c.total*100).toFixed(2):0,
-    一次就好率: c.total? +(c.ycjh/c.total*100).toFixed(2):0,
-    换件一次就好率: c.parts? +(c.parts_ycjh/c.parts*100).toFixed(2):0,
-    净按约且一次就好率: c.total? +(c.both/c.total*100).toFixed(2):0,
-    换件比例: c.total? +(c.parts/c.total*100).toFixed(2):0
+    净按约率: c.total? +(c.njy/c.total*100).toFixed(4):0,
+    一次就好率: c.total? +(c.ycjh/c.total*100).toFixed(4):0,
+    换件一次就好率: c.parts? +(c.parts_ycjh/c.parts*100).toFixed(4):0,
+    净按约且一次就好率: c.total? +(c.both/c.total*100).toFixed(4):0,
+    换件比例: c.total? +(c.parts/c.total*100).toFixed(4):0
   };
 }
 
