@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="qVGUuHN7oJ7edgqHQHLQAI">
-<head data-page-node-id="tBGoR1dVXt7AT5b0WvDMfp">
-<meta charset="UTF-8" data-page-node-id="WFCQHnPFoAZ4BDYK8i5VYY">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="VpCoXoFzSQDTA3TNZn2ZLI">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>恒洁2026一次就好率仪表盘</title>
 <script>
 var _hmt = _hmt || [];
@@ -120,351 +120,351 @@ var _hmt = _hmt || [];
   .attr-card .chart { width:100%; height:300px; }
 </style>
 </head>
-<body data-page-node-id="JIIqebvaLt8KRZ2XmlCDm0">
-<div class="header" data-page-node-id="BW3U7WmsuQ8yTPnUAiLvj4">
-  <h1 data-page-node-id="ahk2nsoFR0Q0kvfLSJygB5">恒洁2026一次就好率仪表盘</h1>
-  <div class="sub" id="headerInfo" data-page-node-id="kZYBDFqBhlENt2nJKw6iHe">加载数据中...</div>
+<body>
+<div class="header">
+  <h1>恒洁2026一次就好率仪表盘</h1>
+  <div class="sub" id="headerInfo">加载数据中...</div>
 </div>
 
 <!-- 加载遮罩 -->
-<div id="loadingOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,247,250,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;" data-page-node-id="W7NkWA8LywQnTJdTlY2U4F">
-  <div style="font-size:20px;color:#2563eb;font-weight:600;margin-bottom:12px;" data-page-node-id="zUK1GA1FLN8RYjf5ozGAWx">恒洁2026一次就好率仪表盘</div>
-  <div id="loadProgress" style="width:300px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;" data-page-node-id="rv8kCVLrZ4Itt3H7MmhPN4">
-    <div id="loadBar" style="width:0%;height:100%;background:linear-gradient(90deg,#2563eb,#36C66F);border-radius:3px;transition:width .3s;" data-page-node-id="kkfeS7A5ySy6a4pPbHCKAf"></div>
+<div id="loadingOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,247,250,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;">
+  <div style="font-size:20px;color:#2563eb;font-weight:600;margin-bottom:12px;">恒洁2026一次就好率仪表盘</div>
+  <div id="loadProgress" style="width:300px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;">
+    <div id="loadBar" style="width:0%;height:100%;background:linear-gradient(90deg,#2563eb,#36C66F);border-radius:3px;transition:width .3s;"></div>
   </div>
-  <div id="loadText" style="margin-top:8px;font-size:13px;color:#64748b;" data-page-node-id="81yOFl2nNNHz1p4l4QbGIv">解析数据...</div>
+  <div id="loadText" style="margin-top:8px;font-size:13px;color:#64748b;">解析数据...</div>
 </div>
 
-<div class="container" data-page-node-id="80vvkkBssxJAV1ztbfjtBl">
+<div class="container">
   <!-- 筛选器 -->
-  <div class="filter-bar" data-page-node-id="hAFFUKAD5T53P8qsIkQDNx">
-    <div class="filter-item" data-page-node-id="D41e94Vk0aaALZ7uGfMvnR">
-      <label data-page-node-id="bRj0tIPQ6ufKgjtDNiZRMh">年月(起)</label>
-      <select id="fMonthStart" data-page-node-id="HNPHboJ1XtHefqrMBOUthe"></select>
+  <div class="filter-bar">
+    <div class="filter-item">
+      <label>年月(起)</label>
+      <select id="fMonthStart"></select>
     </div>
-    <div class="filter-item" data-page-node-id="0xagfccH4BRgYG2Sjrbrbj">
-      <label data-page-node-id="bq6jfApBV7vjL1QCC2TT7l">年月(止)</label>
-      <select id="fMonthEnd" data-page-node-id="EI6LvFgCkeMXssDvDVtdJr"></select>
+    <div class="filter-item">
+      <label>年月(止)</label>
+      <select id="fMonthEnd"></select>
     </div>
-    <div class="filter-item" data-page-node-id="wivBl6cX9dceL0UDBiTOBN">
-      <label data-page-node-id="0H5KYdLwFogK9UCc9SiuUE">工单来源</label>
-      <div class="ms-wrap" data-id="fSource" data-key="sources" data-page-node-id="EhsfwNY3iHPsusvKYkZipz"><button class="ms-trigger" type="button" onclick="msToggle('fSource')" data-page-node-id="0AdDSzIjCBxgoCkeNFDwJZ">全部 <span data-page-node-id="tSkXMuQ2YlKzp6Z7Mqkees">▾</span></button><div class="ms-dropdown" id="ms-fSource" style="display:none;" data-page-node-id="CSHVyHxWn1GIItH8j0PmcS"></div></div>
+    <div class="filter-item">
+      <label>工单来源</label>
+      <div class="ms-wrap" data-id="fSource" data-key="sources"><button class="ms-trigger" type="button" onclick="msToggle('fSource')">全部 <span>▾</span></button><div class="ms-dropdown" id="ms-fSource" style="display:none;"></div></div>
     </div>
-    <div class="filter-item" data-page-node-id="cCzK4qa3lLCNU6AKJPS29a">
-      <label data-page-node-id="Cx1z9U74vJvnORmZyYqLI2">金牌工程师</label>
-      <select id="fGold" data-page-node-id="x69OyUqOLduFjTKKuZs65A"><option value="all" data-page-node-id="BEYXTNVfpJpyHnqr1nMCBP">全部</option><option value="1" data-page-node-id="74Rjyxa2SyPzI4eoSdZNDB">是</option><option value="0" data-page-node-id="I134785xjNMMhl9mH52JVE">否</option></select>
+    <div class="filter-item">
+      <label>金牌工程师</label>
+      <select id="fGold"><option value="all">全部</option><option value="1">是</option><option value="0">否</option></select>
     </div>
-    <div class="filter-item" data-page-node-id="ZpaDx00Nl6bCY2qaN9m6Lh">
-      <label data-page-node-id="EnGv1MpcChJEHikyNU4vNh">使用配件</label>
-      <select id="fParts" data-page-node-id="6DZd9J2IpmtEOh4Z8tJZ7q"><option value="all" data-page-node-id="ZDX5TiDJVyFxwXauzr0QQr">全部</option><option value="1" data-page-node-id="xiuDN0ZjNjW7nbrY306BWh">是</option><option value="0" data-page-node-id="U3v0tdF7HNz3U6qTDNujUW">否</option></select>
+    <div class="filter-item">
+      <label>使用配件</label>
+      <select id="fParts"><option value="all">全部</option><option value="1">是</option><option value="0">否</option></select>
     </div>
-    <div class="filter-item" data-page-node-id="vfz7eEPju9lBDQu9WCpncr">
-      <label data-page-node-id="nU4SydwSbSeAuBxtBERSP1">大区经理</label>
-      <div class="ms-wrap" data-id="fManager" data-key="managers" data-page-node-id="6ARLHOK7tRUfWFoTcbS8lH"><button class="ms-trigger" type="button" onclick="msToggle('fManager')" data-page-node-id="IAcWbb5uNJWUpZqk8EyVmE">全部 <span data-page-node-id="REKk6CFLdCn8bPkGVIbrMN">▾</span></button><div class="ms-dropdown" id="ms-fManager" style="display:none;" data-page-node-id="P18EwwI3BUpgA0y83D9doG"></div></div>
+    <div class="filter-item">
+      <label>大区经理</label>
+      <div class="ms-wrap" data-id="fManager" data-key="managers"><button class="ms-trigger" type="button" onclick="msToggle('fManager')">全部 <span>▾</span></button><div class="ms-dropdown" id="ms-fManager" style="display:none;"></div></div>
     </div>
-    <div class="filter-item" data-page-node-id="UFKr5pQkAB6jy5a9rEqOzY">
-      <label data-page-node-id="dwD6dIX6U6YIKvh2vRh8dK">区域经理</label>
-      <div class="ms-wrap" data-id="fRegionManager" data-key="regionManagers" data-page-node-id="QhiuNiV16KGejLLpm2nefY"><button class="ms-trigger" type="button" onclick="msToggle('fRegionManager')" data-page-node-id="XSSv5EaVoNWntBz9z8zU5H">全部 <span data-page-node-id="tmjRuFBNPQXEFJERlC9oZV">▾</span></button><div class="ms-dropdown" id="ms-fRegionManager" style="display:none;" data-page-node-id="GYe7w2aO9FLlE1E4MYTdRx"></div></div>
+    <div class="filter-item">
+      <label>区域经理</label>
+      <div class="ms-wrap" data-id="fRegionManager" data-key="regionManagers"><button class="ms-trigger" type="button" onclick="msToggle('fRegionManager')">全部 <span>▾</span></button><div class="ms-dropdown" id="ms-fRegionManager" style="display:none;"></div></div>
     </div>
-    <div class="filter-item" data-page-node-id="Evcge5jVd2ErRCfnxDkIkc">
-      <label data-page-node-id="I6allbE7ee7YaFKXiWWCfQ">网点类型</label>
-      <div class="ms-wrap" data-id="fNetworkType" data-key="networkTypes" data-page-node-id="KmGIej2iNGXzlHRpGC2LrL"><button class="ms-trigger" type="button" onclick="msToggle('fNetworkType')" data-page-node-id="TFV99LNY9wbOGhkSFUlZ9a">全部 <span data-page-node-id="VAFqFpMvlwNQTT46hBeEJE">▾</span></button><div class="ms-dropdown" id="ms-fNetworkType" style="display:none;" data-page-node-id="a1yDDXBVCB1Ps0VObzxAt5"></div></div>
+    <div class="filter-item">
+      <label>网点类型</label>
+      <div class="ms-wrap" data-id="fNetworkType" data-key="networkTypes"><button class="ms-trigger" type="button" onclick="msToggle('fNetworkType')">全部 <span>▾</span></button><div class="ms-dropdown" id="ms-fNetworkType" style="display:none;"></div></div>
     </div>
-    <div class="filter-item" style="position:relative;" data-page-node-id="j3L6jauAaIFX06rfGTtFAt">
-      <label data-page-node-id="MzkcKPgtg4hxJbdQRMheYV">网点</label>
-      <input type="text" id="fNetworkInput" placeholder="点击选择或输入搜索..." autocomplete="off" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;width:140px;height:28px;" onfocus="showNetDropdown()" onclick="showNetDropdown()" oninput="onNetInput(this)" onchange="onNetChange(this)" data-page-node-id="qyuzcVBD9LIJMhbZX8hRa5">
-      <div id="netDropdown" style="display:none;position:absolute;top:100%;left:42px;min-width:320px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;max-height:200px;overflow-y:auto;z-index:1000;font-size:12px;" data-page-node-id="ohvTRO2DlTw9JDsS0E0Yt5"></div>
+    <div class="filter-item" style="position:relative;">
+      <label>网点</label>
+      <input type="text" id="fNetworkInput" placeholder="点击选择或输入搜索..." autocomplete="off" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;width:140px;height:28px;" onfocus="showNetDropdown()" onclick="showNetDropdown()" oninput="onNetInput(this)" onchange="onNetChange(this)">
+      <div id="netDropdown" style="display:none;position:absolute;top:100%;left:42px;min-width:320px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;max-height:200px;overflow-y:auto;z-index:1000;font-size:12px;"></div>
     </div>
-    <div class="filter-item" style="position:relative;" data-page-node-id="YLCi7C5zBdgsPR9ZqJJI7b">
-      <label data-page-node-id="ESJwV3AZWDXyakjRhZeHkw">工程师</label>
-      <input type="text" id="fEngineerInput" placeholder="点击选择或输入搜索..." autocomplete="off" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;width:140px;height:28px;" onfocus="showEngDropdown()" onclick="showEngDropdown()" oninput="onEngInput(this)" onchange="onEngChange(this)" data-page-node-id="NQoXm330kvq2iBHPq83ONt">
-      <div id="engDropdown" style="display:none;position:absolute;top:100%;left:42px;min-width:320px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;max-height:200px;overflow-y:auto;z-index:1000;font-size:12px;" data-page-node-id="FacX9Eo6ziAsCi7hGzavlt"></div>
+    <div class="filter-item" style="position:relative;">
+      <label>工程师</label>
+      <input type="text" id="fEngineerInput" placeholder="点击选择或输入搜索..." autocomplete="off" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;width:140px;height:28px;" onfocus="showEngDropdown()" onclick="showEngDropdown()" oninput="onEngInput(this)" onchange="onEngChange(this)">
+      <div id="engDropdown" style="display:none;position:absolute;top:100%;left:42px;min-width:320px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;max-height:200px;overflow-y:auto;z-index:1000;font-size:12px;"></div>
     </div>
-    <button class="btn-reset" onclick="resetFilters()" data-page-node-id="TkkFLZav0RHzJFNFIJC76G">重置</button>
-    <div class="filter-status" id="filterStatus" data-page-node-id="SbjngICNIkHTMU5adueCCE">全量数据</div>
+    <button class="btn-reset" onclick="resetFilters()">重置</button>
+    <div class="filter-status" id="filterStatus">全量数据</div>
   </div>
 
   <!-- Tab 导航 -->
-  <div class="tab-nav" data-page-node-id="knWmkClSI0phtE4IkmG0yj">
-    <div class="tab-item active" data-tab="global" onclick="switchTab('global')" data-page-node-id="Njl3APdkPWYzUiHZJ0zB4A">全局</div>
-    <div class="tab-item" data-tab="region" onclick="switchTab('region')" data-page-node-id="hHHuvXwcjVloDQl2rj6gqA">区域汇总</div>
-    <div class="tab-item" data-tab="parts" onclick="switchTab('parts')" data-page-node-id="eH6tWVFsRQj6NBhBbiyD5w">配件</div>
+  <div class="tab-nav">
+    <div class="tab-item active" data-tab="global" onclick="switchTab('global')">全局</div>
+    <div class="tab-item" data-tab="region" onclick="switchTab('region')">区域汇总</div>
+    <div class="tab-item" data-tab="parts" onclick="switchTab('parts')">配件</div>
   </div>
 
-  <div class="tab-content" data-page-node-id="cNV2jNWNjuQCLd9SD4Tu88">
-    <div class="tab-pane active" id="tab-global" data-page-node-id="Vevws0jWYCEP3M4VDuTBLn">
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab-global">
 
   <!-- A1. 全年五大核心指标卡片 -->
-  <div class="kpi-section" data-page-node-id="VsSQ57vUWZc8igrCIkfAdS">
-    <div class="kpi-section-title" data-page-node-id="xI3eK6kTnpFrV1rkZv9Mbc">全年五大核心指标  <span class="kpi-section-sub" id="kpiYearSub" data-page-node-id="43cKlskksQ922CeoFLQCWQ">全量数据</span></div>
-    <div class="kpi-row" id="kpiRowYear" data-page-node-id="6CdNd6UYA3gBMP9APVMhAN"></div>
+  <div class="kpi-section">
+    <div class="kpi-section-title">全年五大核心指标  <span class="kpi-section-sub" id="kpiYearSub">全量数据</span></div>
+    <div class="kpi-row" id="kpiRowYear"></div>
   </div>
 
   <!-- A2. 当月五大核心指标卡片 -->
-  <div class="kpi-section" data-page-node-id="NNkTHPsCHe2dcLAR7oFnjg">
-    <div class="kpi-section-title" data-page-node-id="LGyu5BherUAMqE1KXMHRGM">当月五大核心指标  <span class="kpi-section-sub" id="kpiMonthSub" data-page-node-id="LNu5aW6BEu6pCseYkFnhxT">当前月</span></div>
-    <div class="kpi-row" id="kpiRowMonth" data-page-node-id="GiPEAtI0lbUbYiAcfW0c1X"></div>
+  <div class="kpi-section">
+    <div class="kpi-section-title">当月五大核心指标  <span class="kpi-section-sub" id="kpiMonthSub">当前月</span></div>
+    <div class="kpi-row" id="kpiRowMonth"></div>
   </div>
 
   <!-- 月环比总结条 -->
-  <div class="kpi-section" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;" data-page-node-id="JqsUCA8newEAwrxKBeHMfL">
-    <div class="ctrl-row" style="margin-bottom:4px;" data-page-node-id="LfFi8N1GxpH72SpLaMk1Q2">
-      <span class="ctrl-label" data-page-node-id="ETtbRyWfN6HhLUzuPRAu3f">指标:</span>
-      <select id="summaryMetric" onchange="renderAll()" style="width:140px;" data-page-node-id="NvkaB9KEAAybJ0oge9wMPF"></select>
+  <div class="kpi-section" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+    <div class="ctrl-row" style="margin-bottom:4px;">
+      <span class="ctrl-label">指标:</span>
+      <select id="summaryMetric" onchange="renderAll()" style="width:140px;"></select>
     </div>
-    <div style="font-size:13px;color:#334155;line-height:1.7;" id="monthlySummary" data-page-node-id="Qs5aZMxm8hHxMd0AnprcSb"></div>
+    <div style="font-size:13px;color:#334155;line-height:1.7;" id="monthlySummary"></div>
   </div>
 
   <!-- C. 月度工单&5指标组合图 -->
-  <div class="chart-grid full" data-page-node-id="TA8cBLiJzswlUhleOPBAHh">
-    <div class="chart-box" data-page-node-id="QRt9onuhwJnwmgiSF0XBM9">
-      <div class="chart-title" data-page-node-id="VBgcQ3oHOYNVn77xKXEV07">月度工单量 & 五大核心指标趋势  <button onclick="exportMonthTrendXlsx()" style="font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;float:right;margin-top:2px;" data-page-node-id="d6efYBj3WSaNXg4pVLTCMQ">导出Excel</button></div>
-      <div id="chartMonth" class="chart" data-page-node-id="5B7zEEzBd1eKjXHlncj0LF"></div>
+  <div class="chart-grid full">
+    <div class="chart-box">
+      <div class="chart-title">月度工单量 & 五大核心指标趋势  <button onclick="exportMonthTrendXlsx()" style="font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;float:right;margin-top:2px;">导出Excel</button></div>
+      <div id="chartMonth" class="chart"></div>
     </div>
   </div>
 
   <!-- D1/D2/D3 多维折线 -->
-  <div class="chart-grid" data-page-node-id="iDBF5kWAbtEq7krit0pj9E">
-    <div class="chart-box" data-page-node-id="15Vzy0hnntxsvsApMVee1x">
-      <div class="chart-title" data-page-node-id="LZbr6xkqvkpLbCeSPNYBC4">工单来源 × 月度指标 </div>
-      <div class="ctrl-row" data-page-node-id="souBPiGT8WJhbBomzvFtxL">
-        <span class="ctrl-label" data-page-node-id="n4bknuYI0HOqVNBTAE9E3I">指标:</span>
-        <select id="srcMetric" onchange="renderAll()" data-page-node-id="bUoUdaJKyCJ1O9RzRgwVWz"></select>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">工单来源 × 月度指标 </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="srcMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartSource" class="chart-sm" data-page-node-id="VnB6oDQhVPlncGUxNiu4uP"></div>
+      <div id="chartSource" class="chart-sm"></div>
     </div>
-    <div class="chart-box" data-page-node-id="tpgMEUrpd7g8Bmr37LK6mx">
-      <div class="chart-title" data-page-node-id="pARGgk3MCYpz9pPEyayHcG">金牌工程师 × 月度指标 </div>
-      <div class="ctrl-row" data-page-node-id="PBuuxKhJ3T6DM4ham2FHwj">
-        <span class="ctrl-label" data-page-node-id="HfgQvkDTtFrfHESvEHNpMH">指标:</span>
-        <select id="goldMetric" onchange="renderAll()" data-page-node-id="k3KLSbfk6i2u1C6GQSrY1K"></select>
+    <div class="chart-box">
+      <div class="chart-title">金牌工程师 × 月度指标 </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="goldMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartGold" class="chart-sm" data-page-node-id="WRg9LSBPoFMSisOk1AEg8M"></div>
+      <div id="chartGold" class="chart-sm"></div>
     </div>
   </div>
 
-  <div class="chart-grid" data-page-node-id="Iu8lfYssEF9ClcQ5NqkeF1">
-    <div class="chart-box" data-page-node-id="zz7ardkcu74qQesXAfSstm">
-      <div class="chart-title" onclick="toggleCollapse('ntypeCollapse',this)" style="cursor:pointer;" data-page-node-id="XAAVMRZmHOocc7JL76yhrY">网点类型 × 月度指标 <span style="font-size:11px;color:#94a3b8;" data-page-node-id="b1rt36jgLO09ySp02GefBY">点击展开</span></div>
-      <div id="ntypeCollapse" style="display:none;" data-page-node-id="EXlAd2GxGxl09yucXywaoH">
-      <div class="ctrl-row" data-page-node-id="syTRifb1Vcl8RjbGx5crq3">
-        <span class="ctrl-label" data-page-node-id="bOhnxLHjlNYcKRDxGjlUQm">指标:</span>
-        <select id="ntypeMetric" onchange="renderAll()" data-page-node-id="R0zVcdqTGI8RXFtwHo4CiV"></select>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title" onclick="toggleCollapse('ntypeCollapse',this)" style="cursor:pointer;">网点类型 × 月度指标 <span style="font-size:11px;color:#94a3b8;">点击展开</span></div>
+      <div id="ntypeCollapse" style="display:none;">
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="ntypeMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartNtype" class="chart-sm" data-page-node-id="ViT7UUqVAlAJMrU9Y3YUex"></div>
+      <div id="chartNtype" class="chart-sm"></div>
       </div>
     </div>
-    <div class="chart-box" data-page-node-id="qpe5PlLdCCIv2yY5SkSPzg">
-      <div class="chart-title" onclick="toggleCollapse('personCollapse',this)" style="cursor:pointer;" data-page-node-id="ysZUG6tvHkI9vXq05ICW49">人员属性 × 月度指标 <span style="font-size:11px;color:#94a3b8;" data-page-node-id="l7fCbwaCvCIb8LwPp55sdB">点击展开</span></div>
-      <div id="personCollapse" style="display:none;" data-page-node-id="AaYPY27ZKxliPlDqlZiD9n">
-      <div class="ctrl-row" data-page-node-id="Ni9O1Gf6a11d4QgGGluLxX">
-        <span class="ctrl-label" data-page-node-id="JRALi9pGHFs9GpERj4dUas">指标:</span>
-        <select id="personMetric" onchange="renderAll()" data-page-node-id="g5XZi75tJsIBonHg67GXxp"></select>
+    <div class="chart-box">
+      <div class="chart-title" onclick="toggleCollapse('personCollapse',this)" style="cursor:pointer;">人员属性 × 月度指标 <span style="font-size:11px;color:#94a3b8;">点击展开</span></div>
+      <div id="personCollapse" style="display:none;">
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="personMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartPerson" class="chart-sm" data-page-node-id="4Vl1q0uMDjmhL0PB9RKsTH"></div>
+      <div id="chartPerson" class="chart-sm"></div>
       </div>
     </div>
   </div>
 
   <!-- H. 配件分组对比 -->
-  <div class="chart-grid" data-page-node-id="pTeB5DGjEf7u0POaleFtK6">
-    <div class="chart-box" data-page-node-id="qMV5njGUHjYmeTuJsB3Ic6">
-      <div class="chart-title" data-page-node-id="ITcVbuS6BvwaObqZCGXGpn">配件SKU分组 × 月度指标 </div>
-      <div class="ctrl-row" data-page-node-id="BZ0fuUH0ntPNUBiZ3IYuU5">
-        <span class="ctrl-label" data-page-node-id="xwTYFIIvhkErrMojEl1hq4">指标:</span>
-        <select id="skuMetric" onchange="renderAll()" data-page-node-id="2G2AE240jznvxnPZdE8GwX"></select>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">配件SKU分组 × 月度指标 </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="skuMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartParts" class="chart-sm" data-page-node-id="32v00hNzzl9fu9h4o8c1Yo"></div>
+      <div id="chartParts" class="chart-sm"></div>
     </div>
-    <div class="chart-box" data-page-node-id="tr14vlGtRSH0CLd3EF3NM5">
-      <div class="chart-title" data-page-node-id="UtcrmS4e1GmnNiGWKvkuxC">配件SKU工单占比 </div>
-      <div class="ctrl-row" style="height:28px;" data-page-node-id="2a09IsS3XAKvhdjpqKS07y">
-        <span class="ctrl-label" style="color:#64748b;" data-page-node-id="hMKSdFLXBozUVYm5lz1nTU">换件工单</span>
+    <div class="chart-box">
+      <div class="chart-title">配件SKU工单占比 </div>
+      <div class="ctrl-row" style="height:28px;">
+        <span class="ctrl-label" style="color:#64748b;">换件工单</span>
       </div>
-      <div id="chartPartsRatio" class="chart-sm" data-page-node-id="oDAa1c4LeZihATQ6IAyoGo"></div>
+      <div id="chartPartsRatio" class="chart-sm"></div>
     </div>
   </div>
 
   <!-- E1/E2 责任部门 & 原因 -->
-  <div class="chart-grid" data-page-node-id="jlMOkPfbGNjNXwqn8XopHV">
-    <div class="chart-box" data-page-node-id="BdbZb5g3gEPkjP4EHc7fSH">
-      <div class="chart-title" data-page-node-id="yFC83tO6q4SCoUrtNTZljj">一次就好否责任部门占比 </div>
-      <div id="chartDept" class="chart-sm" data-page-node-id="IseyE3x4BaIo3ikWeKqb5h"></div>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">一次就好否责任部门占比 </div>
+      <div id="chartDept" class="chart-sm"></div>
     </div>
-    <div class="chart-box" data-page-node-id="5w9u5zrggtBEB70Y3yWbuS">
-      <div class="chart-title" data-page-node-id="pFfUxhhdUIjJz6EAbNq0DF">一次就好否原因子类占比 </div>
-      <div id="chartReason" class="chart-sm" data-page-node-id="2kcNvn6TKiopWtwTnt35ii"></div>
+    <div class="chart-box">
+      <div class="chart-title">一次就好否原因子类占比 </div>
+      <div id="chartReason" class="chart-sm"></div>
     </div>
   </div>
 
-  <div class="kpi-section" data-page-node-id="9F7toGhn0EpGjb6hoxHK6w">
-    <div class="kpi-section-title" data-page-node-id="pwOB7mwlZyRHHUw9F0wIPq">一次就好否·责任部门 × 原因子类 明细表 </div>
-    <div id="detailTable" class="detail-table-wrap" data-page-node-id="z2UyfyT8psqi8qYyjVX5TN"></div>
+  <div class="kpi-section">
+    <div class="kpi-section-title">一次就好否·责任部门 × 原因子类 明细表 </div>
+    <div id="detailTable" class="detail-table-wrap"></div>
   </div>
 
   <!-- 各维度贡献度归因分析 -->
-  <div class="kpi-section" data-page-node-id="anq5Fc1EDpBgFxqWZGMC9l">
-    <div class="kpi-section-title" data-page-node-id="CAe23AibxPV3FZogI7XC0H">维度贡献度归因分析  <span class="kpi-section-sub" id="attrPeriod" data-page-node-id="HcIcB5W9OHwL3Hb0xRi4Ap"></span></div>
-    <div class="ctrl-row" data-page-node-id="yVGjPIo7WwwI7dKlbFtAXN">
-      <span class="ctrl-label" data-page-node-id="6c90MrsJ46LUrGO4KDH6lw">指标:</span>
-      <select id="attrMetric" onchange="renderAll()" data-page-node-id="drNw3PWQADUNv3OYagIWug"></select>
-      <label style="margin-left:12px;font-size:13px;color:#475569;cursor:pointer;" data-page-node-id="X0G7gM1OXGxjbly1hGgVpV">
-        <input type="checkbox" id="attrShowMix" onchange="renderAll()" style="margin-right:4px;" data-page-node-id="Q4hOmlMmO39ZDBssYQlhNb">显示结构效应
+  <div class="kpi-section">
+    <div class="kpi-section-title">维度贡献度归因分析  <span class="kpi-section-sub" id="attrPeriod"></span></div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="attrMetric" onchange="renderAll()"></select>
+      <label style="margin-left:12px;font-size:13px;color:#475569;cursor:pointer;">
+        <input type="checkbox" id="attrShowMix" onchange="renderAll()" style="margin-right:4px;">显示结构效应
       </label>
-      <label style="margin-left:12px;font-size:13px;color:#475569;cursor:pointer;" data-page-node-id="ki8OCtI2T1QmCtEJ6XFo6j">
-        <input type="checkbox" id="attrShowTotal" onchange="renderAll()" style="margin-right:4px;" data-page-node-id="kEGAjo3cUvv7yO5gwyRHtH">显示总贡献
+      <label style="margin-left:12px;font-size:13px;color:#475569;cursor:pointer;">
+        <input type="checkbox" id="attrShowTotal" onchange="renderAll()" style="margin-right:4px;">显示总贡献
       </label>
     </div>
-    <div class="chart-desc" data-page-node-id="cz7MfwUH3tWwl99aVySifv">默认显示率效应（各维度值自身率变化×平均权重的贡献），代表各维度率变化影响整体多少<br data-page-node-id="SVbzLGn7hutCvx9qJXQhAE">结构效应（各维度权重变化×平均率的贡献），代表各维度单量变化影响整体多少<br data-page-node-id="HGt3LB8lRFSIS2EIVqUNPp">总贡献度=率效应+结构效应≈整体环比变化，代表各维度对整体变化的净贡献</div>
-    <div id="attrGrid" class="attr-grid" data-page-node-id="r906O9POOvtpZuxAdQ4Szf"></div>
+    <div class="chart-desc">默认显示率效应（各维度值自身率变化×平均权重的贡献），代表各维度率变化影响整体多少<br>结构效应（各维度权重变化×平均率的贡献），代表各维度单量变化影响整体多少<br>总贡献度=率效应+结构效应≈整体环比变化，代表各维度对整体变化的净贡献</div>
+    <div id="attrGrid" class="attr-grid"></div>
   </div>
   </div>
 
   <!-- 区域经理 Tab（含子Tab：区域+网点） -->
-  <div class="tab-pane" id="tab-region" data-page-node-id="4p1fIwqCiZGltjQHExf5mW">
+  <div class="tab-pane" id="tab-region">
 
-  <div class="sub-nav" data-page-node-id="80pGbLkynFqnyxSK8MKk9y">
-    <div class="sub-item active" onclick="switchSubTab('regionArea',this)" data-page-node-id="KL3i59eHjzmbdocCLpCvp8">区域</div>
-    <div class="sub-item" onclick="switchSubTab('regionProv',this)" data-page-node-id="jPCwO5bYHJ0fiqLfAen75v">省份</div>
-    <div class="sub-item" onclick="switchSubTab('regionNet',this)" data-page-node-id="2Lo5nBbqoWHa3b0LO1zMEI">网点</div>
-    <div class="sub-item" onclick="switchSubTab('regionEng',this)" data-page-node-id="lb9aE3IH0YDXGGicGB129A">工程师</div>
+  <div class="sub-nav">
+    <div class="sub-item active" onclick="switchSubTab('regionArea',this)">区域</div>
+    <div class="sub-item" onclick="switchSubTab('regionProv',this)">省份</div>
+    <div class="sub-item" onclick="switchSubTab('regionNet',this)">网点</div>
+    <div class="sub-item" onclick="switchSubTab('regionEng',this)">工程师</div>
   </div>
 
   <!-- 区域子面板 -->
-  <div class="sub-pane active" id="sub-regionArea" data-page-node-id="FNZu16vT008R4OQfrTVzHg">
+  <div class="sub-pane active" id="sub-regionArea">
 
-  <div class="kpi-section" style="display:flex;gap:16px;" data-page-node-id="H1NzyZz9a6VneNwg4X948s">
-    <div style="flex:1;min-width:0;" data-page-node-id="AXBYKqDbc5eZDbbiX8l0uY">
-      <div class="kpi-section-title" data-page-node-id="qp118l2TJ9hp2NTLxsqArW">大区经理指标对比 </div>
-      <div class="ctrl-row" data-page-node-id="HVr3dNBF7vok7Srs13SJqx">
-        <span class="ctrl-label" data-page-node-id="aiLfKifFIXyWMxnwjYLczO">指标:</span>
-        <select id="mgrMetric" onchange="renderAll()" data-page-node-id="Z8e0MrAbexdFrSKy2GPHZp"></select>
+  <div class="kpi-section" style="display:flex;gap:16px;">
+    <div style="flex:1;min-width:0;">
+      <div class="kpi-section-title">大区经理指标对比 </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="mgrMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartManager" class="chart-sm" data-page-node-id="KXdxX67bp1QaLpaTvHfZQn"></div>
+      <div id="chartManager" class="chart-sm"></div>
     </div>
-    <div style="flex:1;min-width:0;" data-page-node-id="PN2dGONo4URpdJxbBsgOs4">
-      <div class="kpi-section-title" data-page-node-id="rXGEtdMp6av5MPHuBz1CnU">区域经理指标对比  <span id="regionMgrNote" style="font-size:12px;color:#64748b;font-weight:400;" data-page-node-id="o0p5yp8YYYa3mw4lgQ6sbJ">点击大区经理图表可筛选其旗下区域经理</span></div>
-      <div class="ctrl-row" data-page-node-id="ZyaZAM1Skpd6NfcxIBeO1X">
-        <span class="ctrl-label" data-page-node-id="5ZWncDgeZW6zHDeasGRzFF">指标:</span>
-        <select id="regionMetric" onchange="renderAll()" data-page-node-id="vIrSnUOfBiwKOKB3hrda9G"></select>
+    <div style="flex:1;min-width:0;">
+      <div class="kpi-section-title">区域经理指标对比  <span id="regionMgrNote" style="font-size:12px;color:#64748b;font-weight:400;">点击大区经理图表可筛选其旗下区域经理</span></div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="regionMetric" onchange="renderAll()"></select>
       </div>
-      <div id="chartRegionMgr" class="chart-sm" data-page-node-id="IhXu9yoN12pQinJDOJSHcu"></div>
+      <div id="chartRegionMgr" class="chart-sm"></div>
     </div>
   </div>
 
-  <div class="kpi-section" data-page-node-id="uJy8dOFbvSO6msBt7swt7I">
-    <div class="kpi-section-title" onclick="toggleCollapse('mgrTrendCollapse',this)" style="cursor:pointer;" data-page-node-id="vZy1nss4mTeKZarUPnnVh0">大区经理月度趋势  <span style="font-size:11px;color:#94a3b8;" data-page-node-id="az17f53KOlVpvSkFV9R8A5">点击展开</span></div>
-    <div id="mgrTrendCollapse" style="display:none;" data-page-node-id="to5FpkqkaCa6sxERAgTvez">
-    <div class="ctrl-row" data-page-node-id="OOZ6Zd6ywtfIzsgxopfsrY">
-      <span class="ctrl-label" data-page-node-id="I1kyy7KYCntIdwjZOgphvP">指标:</span>
-      <select id="mgrTrendMetric" onchange="renderAll()" data-page-node-id="gEylIWEKMYssgHNqbi2WjN"></select>
+  <div class="kpi-section">
+    <div class="kpi-section-title" onclick="toggleCollapse('mgrTrendCollapse',this)" style="cursor:pointer;">大区经理月度趋势  <span style="font-size:11px;color:#94a3b8;">点击展开</span></div>
+    <div id="mgrTrendCollapse" style="display:none;">
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="mgrTrendMetric" onchange="renderAll()"></select>
     </div>
-    <div id="chartManagerTrend" class="chart" data-page-node-id="AJP4rkAM4ajtbdCUQeaNs5"></div>
+    <div id="chartManagerTrend" class="chart"></div>
     </div>
   </div>
 
-  <div class="kpi-section" data-page-node-id="nIL0dgH81uKox8XlHEThKc">
-    <div class="kpi-section-title" data-page-node-id="bW9eCO2WBLKHsVmMaTZov6">区域经理月度趋势 </div>
-    <div class="ctrl-row" data-page-node-id="YFV11kJyYd0NpkxDBmwIDZ">
-      <span class="ctrl-label" data-page-node-id="gdF3kMmColPilEH0Ywevs7">指标:</span>
-      <select id="regionTrendMetric" onchange="renderAll()" data-page-node-id="QDq8IrEla3Wgi8wa65QBs7"></select>
-      <span class="ctrl-label" style="margin-left:12px;" data-page-node-id="ZnwhssW7u7kayM5Pa4iqni">大区经理:</span>
-      <select id="regionTrendMgr" onchange="renderAll()" data-page-node-id="3NcKHBVE4H1a7J5204DVNB"></select>
+  <div class="kpi-section">
+    <div class="kpi-section-title">区域经理月度趋势 </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="regionTrendMetric" onchange="renderAll()"></select>
+      <span class="ctrl-label" style="margin-left:12px;">大区经理:</span>
+      <select id="regionTrendMgr" onchange="renderAll()"></select>
     </div>
-    <div id="chartRegionTrend" class="chart" data-page-node-id="RqNAXeLeGc7SzpgJuYqqZa"></div>
+    <div id="chartRegionTrend" class="chart"></div>
   </div>
 
-  <div class="kpi-section" data-page-node-id="qRBS7fd3Gj9bMPj3pvUTYE">
-    <div class="kpi-section-title" data-page-node-id="AcAxV8ChrEMG3SGbUvzOL4">
+  <div class="kpi-section">
+    <div class="kpi-section-title">
       区域经理明细表 
-      <span id="regionDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;" data-page-node-id="ae5LG9HKV9y8saD9GEENUn"></span>
-      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;" data-page-node-id="JYs7LwqNUe3xlHfhpdy0Cd">
-        <input type="checkbox" id="regionDetailShowAll" onchange="renderAll()" data-page-node-id="mYWp8vv4xHxu75yT3oMiPx"> <span style="color:#dc2626;font-weight:600;" data-page-node-id="L8OGxNrt341w3bEylEBBf0">显示全部月份</span>
+      <span id="regionDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;"></span>
+      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;">
+        <input type="checkbox" id="regionDetailShowAll" onchange="renderAll()"> <span style="color:#dc2626;font-weight:600;">显示全部月份</span>
       </label>
-      <button onclick="exportRegionDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;" data-page-node-id="7nwydHDQWc8SJq0f0oA3od">导出Excel</button>
+      <button onclick="exportRegionDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;">导出Excel</button>
     </div>
-    <div class="ctrl-row" data-page-node-id="M4S3ndO6NGkCFeM0vNn7KP">
-      <span class="ctrl-label" data-page-node-id="3yfMIAlt25DJY3ZNxnUvei">指标:</span>
-      <select id="regionDetailMetric" onchange="renderAll()" data-page-node-id="EwyiWMzFNlkiBAuAMXucjG"></select>
-      <span style="font-size:12px;color:#64748b;margin-left:8px;" data-page-node-id="FqqpUWHuWSR6dW4kmKnweC">筛选年月: <span id="regionDetailMonth" data-page-node-id="HW81HD9pYNPu5P2Dk2rGEK"></span></span>
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="regionDetailMetric" onchange="renderAll()"></select>
+      <span style="font-size:12px;color:#64748b;margin-left:8px;">筛选年月: <span id="regionDetailMonth"></span></span>
     </div>
-    <div id="chartRegionDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;" data-page-node-id="jz90FIonIGXeZL2AHoIDR7"></div>
+    <div id="chartRegionDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;"></div>
   </div>
 
   </div><!-- /sub-regionArea -->
 
   <!-- 省份子面板 -->
-  <div class="sub-pane" id="sub-regionProv" data-page-node-id="Ofii5mhPr8mttULbC9Hu2l">
-  <div class="kpi-section" data-page-node-id="QJas9QJZz7hsJb5vTlsdSy">
-    <div class="kpi-section-title" style="padding-left:0;margin-top:0;" data-page-node-id="OyUzX0izWJIHnVcRGtU4Pw">省份年度指标对比 <span class="kpi-section-sub" id="provSub" data-page-node-id="diu53NrwclUC56NlkWaAqG">按工单量降序</span></div>
-    <div class="ctrl-row" data-page-node-id="mojI14mSV8CFN5BxECApkc">
-      <span class="ctrl-label" data-page-node-id="CxDtYbcM0O9lIpN01dWpEe">排序:</span>
-      <select id="provSort" onchange="renderProvinceChart()" style="width:120px;" data-page-node-id="j3WzlqSsfUDPld9PCsNBhp">
-        <option value="total" data-page-node-id="c8Z68vwJD5BUayLeCkCOkx">按工单量</option>
-        <option value="rate" data-page-node-id="RQkPzPYp5kJeNybco3dhJK">按率</option>
+  <div class="sub-pane" id="sub-regionProv">
+  <div class="kpi-section">
+    <div class="kpi-section-title" style="padding-left:0;margin-top:0;">省份年度指标对比 <span class="kpi-section-sub" id="provSub">按工单量降序</span></div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">排序:</span>
+      <select id="provSort" onchange="renderProvinceChart()" style="width:120px;">
+        <option value="total">按工单量</option>
+        <option value="rate">按率</option>
       </select>
-      <label style="margin-left:16px;font-size:12px;color:#2563eb;cursor:pointer;" onclick="resetProvSort()" data-page-node-id="MKuKlWeMvSAMzV5RgQESp8">重置排序</label>
-      <span style="margin-left:16px;font-size:12px;color:#64748b;" data-page-node-id="sO99UEtlnW5ygG7X7Fsh77">点击省份可查看该省网点明细</span>
+      <label style="margin-left:16px;font-size:12px;color:#2563eb;cursor:pointer;" onclick="resetProvSort()">重置排序</label>
+      <span style="margin-left:16px;font-size:12px;color:#64748b;">点击省份可查看该省网点明细</span>
     </div>
-    <div class="chart-box" data-page-node-id="oDsGztbaxUElErA0N8wuJY"><div id="chartProvince" style="height:500px;background:#fff;" data-page-node-id="nLdSjCJvvb6BNYTYGl7lg8"></div></div>
+    <div class="chart-box"><div id="chartProvince" style="height:500px;background:#fff;"></div></div>
   </div>
-  <div id="provDrillDown" style="display:none;margin-top:12px;" data-page-node-id="FVPhbgYpYHQ3C7lhpzMizZ">
-    <div class="kpi-section-title" id="provDrillTitle" data-page-node-id="CWCWx1byhAfWgkX9HeUniv">省份下钻 <span style="font-size:12px;color:#2563eb;cursor:pointer;font-weight:400;" onclick="closeProvDrill()" data-page-node-id="HC9IiryHtUdeK9SNWVET7R">× 关闭</span></div>
-    <div class="chart-box" data-page-node-id="j9hTNWZUfKoIWS3DK4TgqJ"><div id="chartProvDrill" style="height:550px;background:#fff;" data-page-node-id="D7zG91kPMwy020k8B8zFOc"></div></div>
+  <div id="provDrillDown" style="display:none;margin-top:12px;">
+    <div class="kpi-section-title" id="provDrillTitle">省份下钻 <span style="font-size:12px;color:#2563eb;cursor:pointer;font-weight:400;" onclick="closeProvDrill()">× 关闭</span></div>
+    <div class="chart-box"><div id="chartProvDrill" style="height:550px;background:#fff;"></div></div>
   </div>
   </div><!-- /sub-regionProv -->
 
   <!-- 网路子面板 -->
-  <div class="sub-pane" id="sub-regionNet" data-page-node-id="StZtXCB7r5BJxhX11M33PR">
+  <div class="sub-pane" id="sub-regionNet">
 
-  <div class="kpi-section" style="display:flex;gap:16px;" data-page-node-id="EcbcyL2wipQ59ksjL9JMar">
-    <div style="flex:1;min-width:0;" data-page-node-id="2BQ6PkcwGbpt9jvxA9pIaq">
-      <div class="kpi-section-title" data-page-node-id="7qeYfjHx6OpBMpZxrJ1yCb">网点指标对比 </div>
-      <div class="ctrl-row" data-page-node-id="At5JnIuK5efbKjCQ7q7j4o">
-        <span class="ctrl-label" data-page-node-id="tGR01oKPgmsaPl2VHUS2Nx">指标:</span>
-        <select id="netMetric" onchange="renderAll()" data-page-node-id="6ojtzgTwQAtjuc1s44z2bj"></select>
-        <span style="font-size:11px;color:#64748b;margin-left:8px;" data-page-node-id="37dXlu2dAlgSiAAieduP5F">当月总工单量TOP20按率升序</span>
+  <div class="kpi-section" style="display:flex;gap:16px;">
+    <div style="flex:1;min-width:0;">
+      <div class="kpi-section-title">网点指标对比 </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">指标:</span>
+        <select id="netMetric" onchange="renderAll()"></select>
+        <span style="font-size:11px;color:#64748b;margin-left:8px;">当月总工单量TOP20按率升序</span>
       </div>
-      <div id="chartNet" class="chart-sm" data-page-node-id="JFPTAB05OX6hFFt5CBn4o9"></div>
+      <div id="chartNet" class="chart-sm"></div>
     </div>
   </div>
-  <div class="kpi-section" data-page-node-id="dkJr7msrG6aOAOjrXm0y4B">
-    <div class="kpi-section-title" data-page-node-id="te1ijYWAoz9ASlYAmAwuKs">
+  <div class="kpi-section">
+    <div class="kpi-section-title">
       网点明细表 
-      <span id="netDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;" data-page-node-id="TLMjpcMl27F9LtScmo1Iqd"></span>
-      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;" data-page-node-id="t8on8h1Qp4Ae4FVXA1JFiP">
-        <input type="checkbox" id="netDetailShowAll" onchange="renderAll()" data-page-node-id="HkVyqWxB57Ux5yhDWtKRjJ"> <span style="color:#dc2626;font-weight:600;" data-page-node-id="DIlm5cROj0a1kI03JBzf5V">显示全部月份</span>
+      <span id="netDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;"></span>
+      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;">
+        <input type="checkbox" id="netDetailShowAll" onchange="renderAll()"> <span style="color:#dc2626;font-weight:600;">显示全部月份</span>
       </label>
-      <button onclick="exportNetDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;" data-page-node-id="3kgCddl5da4dCsTKtppeVt">导出Excel</button>
+      <button onclick="exportNetDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;">导出Excel</button>
     </div>
-    <div class="ctrl-row" data-page-node-id="ps8uHsEMd2058xJ4ZjC1iB">
-      <span class="ctrl-label" data-page-node-id="vPV5YXnpLHTqFubwNWHznC">指标:</span>
-      <select id="netDetailMetric" onchange="renderAll()" data-page-node-id="3E9FOEnwFgHLFDvaGfLykG"></select>
-      <span style="font-size:12px;color:#64748b;margin-left:8px;" data-page-node-id="oKLw5syOpH19FUxoZWilJ2">当前月是 <span id="netDetailMonth" data-page-node-id="E0usdahMXAYJLAnDDKoHZi"></span> 月</span>
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="netDetailMetric" onchange="renderAll()"></select>
+      <span style="font-size:12px;color:#64748b;margin-left:8px;">当前月是 <span id="netDetailMonth"></span> 月</span>
     </div>
-    <div id="chartNetDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;position:relative;" data-page-node-id="FoHhuDxEJ7DCuSG7FfxrgV"></div>
+    <div id="chartNetDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;position:relative;"></div>
   </div>
 
   </div><!-- /sub-regionNet -->
 
   <!-- 工程师子面板 -->
-  <div class="sub-pane" id="sub-regionEng" data-page-node-id="OaJemXRi015jnmP0qVfQjB">
+  <div class="sub-pane" id="sub-regionEng">
 
-  <div class="kpi-section" data-page-node-id="WzbBt9DM8WwcJCMn9GPH37">
-    <div class="kpi-section-title" data-page-node-id="ZsimtacO6FpA70FqqGs2tq">
+  <div class="kpi-section">
+    <div class="kpi-section-title">
       工程师明细表 
-      <span id="engDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;" data-page-node-id="VqYT1aHZ2gxIDlD9M2D9bU"></span>
-      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;" data-page-node-id="pngHoEyUwhNt3HbQSO2n2O">
-        <input type="checkbox" id="engDetailShowAll" onchange="renderAll()" data-page-node-id="LrBDawGgGoEl36gqQpVcP3"> <span style="color:#dc2626;font-weight:600;" data-page-node-id="sDioCjECzSGdD3qK7BkC71">显示全部月份</span> <label style="color:#dc2626;font-weight:600;cursor:pointer;" data-page-node-id="Vsmw6L5VCqT6eyHuId433J"><input type="checkbox" id="engShowAllToggle" onchange="renderAll()" data-page-node-id="Pvw55TAjRp0LOdT9yxDGfF"> 显示全部工程师</label>
+      <span id="engDetailFilter" style="font-size:12px;color:#2563eb;font-weight:400;margin-left:8px;"></span>
+      <label style="font-size:12px;color:#64748b;font-weight:400;margin-left:12px;">
+        <input type="checkbox" id="engDetailShowAll" onchange="renderAll()"> <span style="color:#dc2626;font-weight:600;">显示全部月份</span> <label style="color:#dc2626;font-weight:600;cursor:pointer;"><input type="checkbox" id="engShowAllToggle" onchange="renderAll()"> 显示全部工程师</label>
       </label>
-      <button onclick="exportEngDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;" data-page-node-id="sKA5cU1D9q1K2zvUSm5mQx">导出Excel</button>
+      <button onclick="exportEngDetailXlsx()" style="margin-left:12px;font-size:11px;padding:2px 8px;border:1px solid #2563eb;border-radius:4px;background:#fff;color:#2563eb;cursor:pointer;">导出Excel</button>
     </div>
-    <div class="ctrl-row" data-page-node-id="jeOPyrdWe4y8uBEvETx5MJ">
-      <span class="ctrl-label" data-page-node-id="k8vaLaebIYJHVsuIaGkJA1">指标:</span>
-      <select id="engDetailMetric" onchange="renderAll()" data-page-node-id="EgwyNFEpoWv7UNvxHOxKjq"></select>
-      <span style="font-size:12px;color:#64748b;margin-left:8px;" data-page-node-id="7El7L8lZEph1JkQm4CQTsw">当前月是 <span id="engDetailMonth" data-page-node-id="4icw2JptYffCpGQdtxVBwA"></span> 月</span>
+    <div class="ctrl-row">
+      <span class="ctrl-label">指标:</span>
+      <select id="engDetailMetric" onchange="renderAll()"></select>
+      <span style="font-size:12px;color:#64748b;margin-left:8px;">当前月是 <span id="engDetailMonth"></span> 月</span>
     </div>
-    <div id="chartEngDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;position:relative;" data-page-node-id="Ev8wyn8hR5hYOOds62g0mF"></div>
+    <div id="chartEngDetail" class="detail-table-wrap" style="max-height:600px;overflow:auto;position:relative;"></div>
   </div>
 
   </div><!-- /sub-regionEng -->
@@ -474,16 +474,16 @@ var _hmt = _hmt || [];
 </div>
 
 <!-- 配件仪表盘 Tab -->
-<div class="tab-pane" id="tab-parts" data-page-node-id="YwHbPhZzQTk31ijxIte3F6">
+<div class="tab-pane" id="tab-parts">
   <!-- 配件仪表盘内容远超900px（KPI+月度图+3明细表），固定大高度避免截断；src懒加载（切到配件tab才加载） -->
-  <iframe id="partsIframe" data-parts-src="配件一次就好/配件仪表盘_20260731_1127.html" style="width:100%;height:4800px;border:none;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);background:#fff;display:block;" onload="setTimeout(function(){ try{ if(parent && parent.sendPartsFilter) parent.sendPartsFilter(); }catch(e){} },100);" data-page-node-id="VOxK9xUaj3voo84NW1MC7V"></iframe>
+  <iframe id="partsIframe" data-parts-src="配件一次就好/配件仪表盘_20260731_1127.html" style="width:100%;height:4800px;border:none;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);background:#fff;display:block;" onload="setTimeout(function(){ try{ if(parent && parent.sendPartsFilter) parent.sendPartsFilter(); }catch(e){} },100);"></iframe>
 </div>
 
-  <div class="footer" style="display:none;" data-page-node-id="ToNTtHBSiurpR90HFaROQ9">
+  <div class="footer" style="display:none;">
   </div>
 </div>
 
-<link rel="preconnect" href="https://cdn.jsdelivr.net" data-page-node-id="eDL8Nbo4OACjLsznBeBKX7">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="data.js"></script>
