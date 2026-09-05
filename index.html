@@ -3189,6 +3189,9 @@ function renderAttribution(agg){
   document.getElementById('attrPeriod').textContent=ad.prev_month+' → '+ad.current_month+' | 整体环比: '+(ad.overall_change>=0?'+':'')+(Math.round(ad.overall_change*10)/10).toFixed(1)+'% | 率效应: '+(totalRate>=0?'+':'')+totalRate.toFixed(2)+'% | 结构效应: '+(totalMix>=0?'+':'')+totalMix.toFixed(2)+'% | 总贡献: '+(ad.overall_change>=0?'+':'')+ad.overall_change.toFixed(2)+'%';
   var showTotal=document.getElementById('attrShowTotal').checked;
   var showMix=document.getElementById('attrShowMix').checked;
+  // 显示模式（决定柱子画什么，也决定各维度TOP名单按哪个效应值选取）
+  var showMode=showTotal?'contrib':showMix?'mix':'rate';
+  var modeKey=showMode==='contrib'?'contribution':(showMode==='mix'?'mix_effect':'rate_effect');
   // 6维度：工单来源、是否使用配件、网点类型、大区经理、区域经理(TOP10)、网点(TOP10)
   var dimList=[{k:'工单来源',c:'#36C66F'},{k:'是否使用配件',c:'#FF7A2F'},{k:'网点类型',c:'#a855f7'},{k:'大区经理',c:'#F25C98'},{k:'区域经理',c:'#0ea5e9'},{k:'网点',c:'#2578ED'}];
   // 先清理旧的attrChart ECharts实例（否则innerHTML替换DOM后旧实例指向已分离元素）
@@ -3199,10 +3202,10 @@ function renderAttribution(agg){
   var cards=[], chartIds=[];
   dimList.forEach(function(dim){
     var items=ad[dim.k]||[];
-    // 区域经理/网点：按|贡献|降序取TOP8；其他维度按|率效应|降序取TOP10
-    var isContribDim=(dim.k==='区域经理'||dim.k==='网点');
-    items.sort(function(a,b){return Math.abs(isContribDim?b.contribution:b.rate_effect)-Math.abs(isContribDim?a.contribution:a.rate_effect);});
-    var top=items.slice(0,isContribDim?8:10);
+    // TOP选取与显示模式联动：率效应视图按|率效应|、结构效应按|结构效应|、总贡献按|总贡献| 取榜
+    var isNetDim=(dim.k==='区域经理'||dim.k==='网点');
+    items.sort(function(a,b){return Math.abs(b[modeKey])-Math.abs(a[modeKey]);});
+    var top=items.slice(0,isNetDim?8:10);
     if(top.length===0){ cards.push('<div class="attr-card"><div class="attr-card-title">'+dim.k+'</div><div style="padding:20px;color:#94a3b8;text-align:center;">无数据</div></div>'); return; }
     var cid='attrChart-'+dim.k;
     chartIds.push({cid:cid,dim:dim,items:top});
@@ -3214,8 +3217,6 @@ function renderAttribution(agg){
   // 同步渲染
   chartIds.forEach(function(obj){
     var items=obj.items, dim=obj.dim;
-    // 选择显示模式：率效应/结构效应/总贡献
-    var showMode=showTotal?'contrib':showMix?'mix':'rate';
     var sorted=items.slice().sort(function(a,b){
       if(showMode==='contrib') return b.contribution-a.contribution;
       if(showMode==='mix') return b.mix_effect-a.mix_effect;
