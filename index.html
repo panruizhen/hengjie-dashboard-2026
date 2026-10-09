@@ -315,7 +315,7 @@ var _hmt = _hmt || [];
         <input type="checkbox" id="attrShowTotal" onchange="renderAll()" style="margin-right:4px;">显示总贡献
       </label>
     </div>
-    <div class="chart-desc">默认显示率效应（各维度值自身率变化×平均权重的贡献），代表各维度率变化影响整体多少<br>结构效应（各维度权重变化×平均率的贡献），代表各维度单量变化影响整体多少<br>总贡献度=率效应+结构效应≈整体环比变化，代表各维度对整体变化的净贡献</div>
+    <div class="chart-desc">默认显示率效应（各维度值自身率变化×平均权重的贡献），代表各维度率变化影响整体多少<br>结构效应（各维度权重变化×(平均率−整体均值)的贡献），代表各维度单量份额变化相对整体水平影响多少，各维度合计与旧口径一致<br>总贡献度=率效应+结构效应≈整体环比变化，代表各维度对整体变化的净贡献</div>
     <div id="attrGrid" class="attr-grid"></div>
   </div>
   </div>
@@ -988,6 +988,9 @@ function calcYRange(values){
   return {min:Math.max(0,+(min-pad).toFixed(1)), max:+(max+pad).toFixed(1)};
 }
 
+// x轴标签：月数多时轻微旋转并加宽底部留白，保证所有月份标签全部显示
+function _xRot(n){ return n>7 ? 30 : 0; }
+function _xBtm(n){ return n>7 ? 52 : 35; }
 // 保留2位精度，显示1位小数
 function d1(v){ return +(v).toFixed(1); }
 
@@ -1338,7 +1341,7 @@ function renderSourceChart(agg){
   var allVals=[];
   series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:_xBtm(months.length)},xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderGoldChart(agg){
@@ -1371,8 +1374,8 @@ function renderGoldChart(agg){
   ch.setOption({
     tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
     legend:{top:0},
-    grid:{left:50,right:60,top:35,bottom:35},
-    xAxis:{type:'category',splitLine:{show:false},data:months},
+    grid:{left:50,right:60,top:35,bottom:_xBtm(months.length)},
+    xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},
     yAxis:[
       {type:'value',splitLine:{show:false},min:yrL.min,max:yrL.max,axisLabel:{formatter:'{value}%'}},
       {type:'value',min:yrR.min,max:yrR.max,axisLabel:{color:'#a855f7',formatter:'{value}%'},splitLine:{show:false}}
@@ -1406,7 +1409,7 @@ function renderNtypeChart(agg){
   var allVals=[];
   series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:_xBtm(months.length)},xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderPersonChart(agg){
@@ -1434,7 +1437,7 @@ function renderPersonChart(agg){
   var allVals=[];
   series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value!=null?d.value:d;})); });
   var yr=calcYRange(allVals);
-  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:35},xAxis:{type:'category',splitLine:{show:false},data:months},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
+  ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0},grid:{left:50,right:30,top:35,bottom:_xBtm(months.length)},xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},series:series},true);
 }
 
 function renderDeptChart(agg){
@@ -1487,8 +1490,8 @@ function renderDeptChart(agg){
   ch.setOption({
     tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.n+'/'+d.den+')';h+='<br/>';});return h;}},
     legend:{top:0,type:'scroll',data:legendDataFinal,selected:legendSel},
-    grid:{left:50,right:30,top:40,bottom:35},
-    xAxis:{type:'category',splitLine:{show:false},data:months},
+    grid:{left:50,right:30,top:40,bottom:_xBtm(months.length)},
+    xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},
     yAxis:{type:'value',splitLine:{show:false},min:yr.min,max:yr.max,axisLabel:{formatter:'{value}%'}},
     series:series
   },true);
@@ -1713,8 +1716,8 @@ function renderPartsChart(agg){
   var allVals=[]; series.forEach(function(s){ allVals=allVals.concat(s.data.map(function(d){return d.value;})); });
   var yr=calcYRange(allVals);
   ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+(d.n!=null?d.n:d.count)+'/'+d.den+')';h+='<br>';});return h;}},legend:{top:0,data:skuGroups},
-    grid:{left:50,right:30,top:35,bottom:35},
-    xAxis:{type:'category',splitLine:{show:false},data:months},
+    grid:{left:50,right:30,top:35,bottom:_xBtm(months.length)},
+    xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},
     yAxis:{type:'value',splitLine:{show:false},min:Math.max(0,yr.min),max:Math.min(100,yr.max),axisLabel:{formatter:'{value}%'}},
     series:series},true);
 }
@@ -1745,8 +1748,8 @@ function renderPartsRatioChart(agg){
   // 右侧Y轴：1单
   var yrR=calcYRange(series[0].data.map(function(d){return d.value;}));
   ch.setOption({tooltip:{trigger:'axis',formatter:function(p){var h='<b>'+p[0].axisValue+'</b><br/>';p.forEach(function(s){var d=s.data||{};h+=s.marker+' '+s.seriesName+': '+s.value+'%';if(d.den>0)h+=' ('+d.count+'/'+d.den+')';h+='<br/>';});return h;}},legend:{top:0,data:skuNames},
-    grid:{left:50,right:50,top:35,bottom:35},
-    xAxis:{type:'category',splitLine:{show:false},data:months},
+    grid:{left:50,right:50,top:35,bottom:_xBtm(months.length)},
+    xAxis:{type:'category',splitLine:{show:false},data:months,axisLabel:{interval:0,rotate:_xRot(months.length),fontSize:10,margin:8}},
     yAxis:[
       {type:'value',splitLine:{show:false},min:Math.max(0,yrL.min),max:Math.min(100,yrL.max),axisLabel:{formatter:'{value}%'}},
       {type:'value',min:Math.max(0,yrR.min),max:Math.min(100,yrR.max),axisLabel:{color:'#2578ED',formatter:'{value}%'},splitLine:{show:false}}
@@ -3136,6 +3139,7 @@ function computeAttribution(agg, metric){
   if(!gl||!gp||!gl.total||!gp.total) return null;
   function r5c(c){ if(!c||!c.total) return {}; return {净按约率:+(c.njy/c.total*100).toFixed(2),一次就好率:+(c.ycjh/c.total*100).toFixed(2),换件一次就好率:c.parts?+(c.parts_ycjh/c.parts*100).toFixed(2):0,净按约且一次就好率:+(c.both/c.total*100).toFixed(2),换件比例:+(c.parts/c.total*100).toFixed(2)}; }
   var overall_rl=r5c(gl)[metric]||0, overall_rp=r5c(gp)[metric]||0;
+  var overall_avg=(overall_rl+overall_rp)/2;   // 整体均值（两期平均），用于结构效应的"相对整体"口径
   var overall_change=+(overall_rl-overall_rp).toFixed(2);
   var dimConfig=[
     {name:'工单来源',dataKey:'bySrc',labels:DICT.sources},
@@ -3157,7 +3161,7 @@ function computeAttribution(agg, metric){
       if(rl===0&&rp===0) return;
       var wl=cl.total/gl.total, wp=cp.total/gp.total;
       var re=+((rl-rp)*(wl+wp)/2).toFixed(2);
-      var me=+((wl-wp)*(rl+rp)/2).toFixed(2);
+      var me=+((wl-wp)*((rl+rp)/2-overall_avg)).toFixed(2);
       var cnt=+(re+me).toFixed(2);
       items.push({name:dc.labels[ki]||'未知',rate_effect:re,mix_effect:me,contribution:cnt,
         current_rate:rl,prev_rate:rp,current_weight:+wl.toFixed(4),prev_weight:+wp.toFixed(4),
